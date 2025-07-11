@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Peta Digital Desa</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css"
+    />
+    <link rel="stylesheet" href="assets/css/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🗺️ Peta Digital Desa</h1>
+        <p>Sistem Informasi UMKM dan Kependudukan Desa</p>
+      </div>
+
+      <div class="main-content">
+        <div class="map-container">
+          <div id="map"></div>
+        </div>
+
+        <div class="info-panel">
+          <h3>📍 Pilih Desa</h3>
+          <div id="village-list">
+            <div class="loading">Memuat data desa...</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="details-table">
+        <div class="table-header">
+          <h3 id="selected-village">Pilih desa untuk melihat detail UMKM</h3>
+        </div>
+        <div class="table-content">
+          <div id="umkm-details" class="loading">
+            Klik pada salah satu desa di peta atau panel samping untuk melihat
+            detail UMKM
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <script src="assets/js/app.js"></script>
+  </body>
+</html>
