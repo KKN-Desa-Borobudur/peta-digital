@@ -3,47 +3,119 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Peta Digital Desa</title>
+    <title>Peta Digital Desa Borobudur</title>
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     />
     <link rel="stylesheet" href="assets/css/style.css" />
   </head>
   <body>
     <div class="container">
-      <div class="header">
-        <h1>🗺️ Peta Digital Desa</h1>
-        <p>Sistem Informasi UMKM dan Kependudukan Desa</p>
-      </div>
+      <header class="header">
+        <h1>🗺️ Peta Digital Desa Borobudur</h1>
+        <p>Kecamatan Borobudur, Kabupaten Magelang, Jawa Tengah</p>
+      </header>
 
-      <div class="main-content">
-        <div class="map-container">
-          <div id="map"></div>
-        </div>
-
-        <div class="info-panel">
-          <h3>📍 Pilih Desa</h3>
-          <div id="village-list">
-            <div class="loading">Memuat data desa...</div>
+      <div class="map-container">
+        <div id="map"></div>
+        <div class="map-legend">
+          <h3>Legenda</h3>
+          <div class="legend-item">
+            <span class="legend-color" style="background-color: #e74c3c"></span>
+            <span>Pusat Desa</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-color" style="background-color: #3498db"></span>
+            <span>Dusun</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-color" style="background-color: #f39c12"></span>
+            <span>Wisata</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-color" style="background-color: #27ae60"></span>
+            <span>UMKM</span>
           </div>
         </div>
       </div>
 
-      <div class="details-table">
-        <div class="table-header">
-          <h3 id="selected-village">Pilih desa untuk melihat detail UMKM</h3>
+      <div class="info-section">
+        <div class="village-info">
+          <h2>📍 Informasi Desa</h2>
+          <div class="info-grid">
+            <div class="info-card">
+              <h3>Data Administratif</h3>
+              <p><strong>Kepala Desa:</strong> Pak Suryanto Widodo</p>
+              <p><strong>Jumlah Penduduk:</strong> 8,945 jiwa</p>
+              <p><strong>Luas Wilayah:</strong> 25.8 km²</p>
+              <p><strong>Jumlah Dusun:</strong> 4 dusun</p>
+            </div>
+            <div class="info-card">
+              <h3>Potensi Ekonomi</h3>
+              <p><strong>Total UMKM:</strong> 20 unit</p>
+              <p>
+                <strong>Sektor Unggulan:</strong> Pariwisata, Kuliner,
+                Kerajinan, Jasa
+              </p>
+              <p><strong>Status:</strong> Desa Wisata</p>
+            </div>
+            <div class="info-card">
+              <h3>Potensi Wisata</h3>
+              <p><strong>Daya Tarik Utama:</strong> Candi Borobudur</p>
+              <p><strong>Jarak ke Candi:</strong> 2 km</p>
+              <p>
+                <strong>Fasilitas:</strong> Homestay, Rental Sepeda, Souvenir
+                Shop
+              </p>
+            </div>
+          </div>
         </div>
-        <div class="table-content">
-          <div id="umkm-details" class="loading">
-            Klik pada salah satu desa di peta atau panel samping untuk melihat
-            detail UMKM
+
+        <div class="dusun-section">
+          <h2>🏘️ Informasi Dusun</h2>
+          <div class="dusun-tabs">
+            <button class="tab-button active" data-dusun="ngaran-1">
+              Ngaran I
+            </button>
+            <button class="tab-button" data-dusun="ngaran-2">Ngaran II</button>
+            <button class="tab-button" data-dusun="wringin-putih">
+              Wringin Putih
+            </button>
+          </div>
+
+          <div class="dusun-content" id="dusun-info">
+            <!-- Content akan diisi oleh JavaScript -->
+          </div>
+        </div>
+
+        <div class="umkm-section">
+          <h2>🏪 Daftar UMKM</h2>
+          <div class="filter-section">
+            <select id="kategori-filter">
+              <option value="all">Semua Kategori</option>
+              <option value="kuliner">Kuliner</option>
+              <option value="kerajinan">Kerajinan</option>
+              <option value="jasa">Jasa</option>
+              <option value="retail">Retail</option>
+              <option value="kesehatan">Kesehatan</option>
+            </select>
+            <select id="dusun-filter">
+              <option value="all">Semua Dusun</option>
+              <option value="ngaran-1">Ngaran I</option>
+              <option value="ngaran-2">Ngaran II</option>
+              <option value="wringin-putih">Wringin Putih</option>
+            </select>
+          </div>
+
+          <div class="umkm-grid" id="umkm-list">
+            <!-- UMKM cards akan diisi oleh JavaScript -->
           </div>
         </div>
       </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="assets/js/app.js"></script>
   </body>
 </html>

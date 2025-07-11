@@ -1,326 +1,365 @@
 {
-  "villages": [
-    {
-      "id": "desa-borobudur",
-      "name": "Desa Borobudur",
-      "coordinates": [-7.6079, 110.2038],
-      "population": 8945,
-      "area": "25.8 km²",
-      "kecamatan": "Borobudur",
+  "desa_overview": {
+    "id": "desa-borobudur",
+    "nama_desa": "Desa Borobudur",
+    "kecamatan": "Borobudur",
+    "kabupaten": "Magelang",
+    "provinsi": "Jawa Tengah",
+    "koordinat": {
+      "latitude": -7.6079,
+      "longitude": 110.2038
+    },
+    "data_administratif": {
       "kepala_desa": "Pak Suryanto Widodo",
-      "dusun": [
-        {
-          "name": "Ngaran I",
-          "population": 2236,
-          "rt_rw": "RT 01-15, RW 01-03"
-        },
-        {
-          "name": "Ngaran II",
-          "population": 2184,
-          "rt_rw": "RT 16-30, RW 04-06"
-        },
-        {
-          "name": "Wringin Putih",
-          "population": 2298,
-          "rt_rw": "RT 31-45, RW 07-09"
-        },
-        {
-          "name": "Tegalarum",
-          "population": 2227,
-          "rt_rw": "RT 46-60, RW 10-12"
-        }
-      ],
-      "umkm": [
+      "jumlah_penduduk": 8945,
+      "luas_wilayah": "25.8 km²",
+      "jumlah_dusun": 4,
+      "jumlah_rw": 12,
+      "jumlah_rt": 60
+    },
+    "potensi_ekonomi": {
+      "total_umkm": 20,
+      "sektor_unggulan": ["Pariwisata", "Kuliner", "Kerajinan", "Jasa"],
+      "distribusi_umkm": {
+        "kuliner": 5,
+        "kerajinan": 3,
+        "jasa": 7,
+        "retail": 4,
+        "kesehatan": 1
+      }
+    },
+    "potensi_wisata": {
+      "daya_tarik_utama": "Candi Borobudur",
+      "jarak_ke_candi": "2 km",
+      "status": "Desa Wisata",
+      "fasilitas_pendukung": [
+        "Homestay",
+        "Rental Sepeda",
+        "Souvenir Shop",
+        "Warung Kuliner"
+      ]
+    }
+  },
+  "dusun_data": [
+    {
+      "id": "ngaran-1",
+      "nama_dusun": "Ngaran I",
+      "status": "Dusun Utama",
+      "data_demografis": {
+        "jumlah_penduduk": 2236,
+        "persentase_dari_total": "25.0%",
+        "rt_rw": "RT 01-15, RW 01-03",
+        "jumlah_rt": 15,
+        "jumlah_rw": 3
+      },
+      "karakteristik": {
+        "posisi": "Pusat Desa",
+        "akses_utama": "Jl. Raya Borobudur",
+        "keunggulan": "Akses mudah ke Candi Borobudur dan fasilitas umum"
+      },
+      "umkm_list": [
         {
           "id": 1,
-          "name": "Warung Gudeg Borobudur Bu Tini",
-          "type": "Kuliner",
-          "owner": "Ibu Tini Suryawati",
-          "address": "Jl. Raya Borobudur No. 45, Dusun Ngaran I",
-          "phone": "0813-2845-7891",
-          "established": "2015",
-          "speciality": "Gudeg Jogja, Sate Klathak",
-          "dusun": "Ngaran I",
+          "nama": "Warung Gudeg Borobudur Bu Tini",
+          "kategori": "Kuliner",
+          "pemilik": "Ibu Tini Suryawati",
+          "alamat": "Jl. Raya Borobudur No. 45",
+          "telepon": "0813-2845-7891",
+          "tahun_berdiri": 2015,
+          "spesialisasi": "Gudeg Jogja, Sate Klathak",
           "maps_link": "https://maps.google.com/maps?q=Jl.+Raya+Borobudur+No.+45,+Borobudur,+Magelang"
         },
         {
           "id": 2,
-          "name": "Souvenir Candi Borobudur",
-          "type": "Kerajinan",
-          "owner": "Pak Bambang Sutrisno",
-          "address": "Jl. Badrawati No. 12, Dusun Ngaran I",
-          "phone": "0856-4123-8765",
-          "established": "2018",
-          "speciality": "Miniatur Candi, Kerajinan Batu",
-          "dusun": "Ngaran I",
+          "nama": "Souvenir Candi Borobudur",
+          "kategori": "Kerajinan",
+          "pemilik": "Pak Bambang Sutrisno",
+          "alamat": "Jl. Badrawati No. 12",
+          "telepon": "0856-4123-8765",
+          "tahun_berdiri": 2018,
+          "spesialisasi": "Miniatur Candi, Kerajinan Batu",
           "maps_link": "https://maps.google.com/maps?q=Jl.+Badrawati+No.+12,+Borobudur,+Magelang"
         },
         {
           "id": 3,
-          "name": "Homestay Borobudur View",
-          "type": "Jasa",
-          "owner": "Ibu Siti Nurjanah",
-          "address": "Jl. Panorama No. 8, Dusun Ngaran I",
-          "phone": "0822-3456-7890",
-          "established": "2019",
-          "speciality": "Penginapan, Tour Guide",
-          "dusun": "Ngaran I",
+          "nama": "Homestay Borobudur View",
+          "kategori": "Jasa",
+          "pemilik": "Ibu Siti Nurjanah",
+          "alamat": "Jl. Panorama No. 8",
+          "telepon": "0822-3456-7890",
+          "tahun_berdiri": 2019,
+          "spesialisasi": "Penginapan, Tour Guide",
           "maps_link": "https://maps.google.com/maps?q=Jl.+Panorama+No.+8,+Borobudur,+Magelang"
         },
         {
           "id": 4,
-          "name": "Rental Sepeda Borobudur",
-          "type": "Jasa",
-          "owner": "Pak Agus Riyanto",
-          "address": "Jl. Magelang-Yogya KM 40, Dusun Ngaran I",
-          "phone": "0815-6789-1234",
-          "established": "2020",
-          "speciality": "Rental Sepeda, Sepeda Motor",
-          "dusun": "Ngaran I",
+          "nama": "Rental Sepeda Borobudur",
+          "kategori": "Jasa",
+          "pemilik": "Pak Agus Riyanto",
+          "alamat": "Jl. Magelang-Yogya KM 40",
+          "telepon": "0815-6789-1234",
+          "tahun_berdiri": 2020,
+          "spesialisasi": "Rental Sepeda, Sepeda Motor",
           "maps_link": "https://maps.google.com/maps?q=Jl.+Magelang-Yogya+KM+40,+Borobudur,+Magelang"
         },
         {
-          "id": 5,
-          "name": "Warung Soto Ayam Pak Harto",
-          "type": "Kuliner",
-          "owner": "Pak Harto Subagyo",
-          "address": "Jl. Mendut No. 23, Dusun Ngaran II",
-          "phone": "0813-9876-5432",
-          "established": "2016",
-          "speciality": "Soto Ayam, Rawon",
-          "dusun": "Ngaran II",
-          "maps_link": "https://maps.google.com/maps?q=Jl.+Mendut+No.+23,+Borobudur,+Magelang"
-        },
-        {
-          "id": 6,
-          "name": "Batik Borobudur Heritage",
-          "type": "Kerajinan",
-          "owner": "Ibu Ratna Dewi",
-          "address": "Jl. Candi No. 17, Dusun Ngaran II",
-          "phone": "0812-1357-2468",
-          "established": "2017",
-          "speciality": "Batik Tulis, Batik Cap",
-          "dusun": "Ngaran II",
-          "maps_link": "https://maps.google.com/maps?q=Jl.+Candi+No.+17,+Borobudur,+Magelang"
-        },
-        {
-          "id": 7,
-          "name": "Toko Oleh-oleh Borobudur",
-          "type": "Retail",
-          "owner": "Pak Joko Susilo",
-          "address": "Jl. Syailendra No. 5, Dusun Ngaran II",
-          "phone": "0821-4567-8901",
-          "established": "2014",
-          "speciality": "Oleh-oleh Khas, Makanan Ringan",
-          "dusun": "Ngaran II",
-          "maps_link": "https://maps.google.com/maps?q=Jl.+Syailendra+No.+5,+Borobudur,+Magelang"
-        },
-        {
-          "id": 8,
-          "name": "Laundry Cepat Bersih",
-          "type": "Jasa",
-          "owner": "Ibu Maya Sari",
-          "address": "Jl. Wringin Putih No. 15, Dusun Wringin Putih",
-          "phone": "0823-7890-1234",
-          "established": "2021",
-          "speciality": "Laundry Kiloan, Dry Cleaning",
-          "dusun": "Wringin Putih",
-          "maps_link": "https://maps.google.com/maps?q=Jl.+Wringin+Putih+No.+15,+Borobudur,+Magelang"
-        },
-        {
-          "id": 9,
-          "name": "Cafe Sunrise View",
-          "type": "Kuliner",
-          "owner": "Pak Deni Kurniawan",
-          "address": "Jl. Bukit Rhema No. 3, Dusun Wringin Putih",
-          "phone": "0834-5678-9012",
-          "established": "2020",
-          "speciality": "Kopi Lokal, Makanan Barat",
-          "dusun": "Wringin Putih",
-          "maps_link": "https://maps.google.com/maps?q=Jl.+Bukit+Rhema+No.+3,+Borobudur,+Magelang"
-        },
-        {
-          "id": 10,
-          "name": "Kerajinan Gerabah Tradisional",
-          "type": "Kerajinan",
-          "owner": "Pak Sukiman",
-          "address": "Jl. Kerajinan No. 28, Dusun Wringin Putih",
-          "phone": "0816-2345-6789",
-          "established": "2013",
-          "speciality": "Gerabah, Keramik Tradisional",
-          "dusun": "Wringin Putih",
-          "maps_link": "https://maps.google.com/maps?q=Jl.+Kerajinan+No.+28,+Borobudur,+Magelang"
-        },
-        {
-          "id": 11,
-          "name": "Toko Sembako Berkah",
-          "type": "Retail",
-          "owner": "Ibu Ning Suryani",
-          "address": "Jl. Tegalarum Raya No. 10, Dusun Tegalarum",
-          "phone": "0822-8901-2345",
-          "established": "2018",
-          "speciality": "Sembako, Kebutuhan Sehari-hari",
-          "dusun": "Tegalarum",
-          "maps_link": "https://maps.google.com/maps?q=Jl.+Tegalarum+Raya+No.+10,+Borobudur,+Magelang"
-        },
-        {
-          "id": 12,
-          "name": "Bengkel Motor Jaya",
-          "type": "Jasa",
-          "owner": "Pak Surya Dinata",
-          "address": "Jl. Raya Tegalarum No. 22, Dusun Tegalarum",
-          "phone": "0878-3456-7890",
-          "established": "2016",
-          "speciality": "Service Motor, Spare Part",
-          "dusun": "Tegalarum",
-          "maps_link": "https://maps.google.com/maps?q=Jl.+Raya+Tegalarum+No.+22,+Borobudur,+Magelang"
-        },
-        {
-          "id": 13,
-          "name": "Warung Pecel Lele Mas Joko",
-          "type": "Kuliner",
-          "owner": "Pak Joko Pranowo",
-          "address": "Jl. Masjid No. 7, Dusun Tegalarum",
-          "phone": "0815-9012-3456",
-          "established": "2017",
-          "speciality": "Pecel Lele, Ayam Penyet",
-          "dusun": "Tegalarum",
-          "maps_link": "https://maps.google.com/maps?q=Jl.+Masjid+No.+7,+Borobudur,+Magelang"
-        },
-        {
-          "id": 14,
-          "name": "Photocopy dan Print Digital",
-          "type": "Jasa",
-          "owner": "Ibu Indah Permata",
-          "address": "Jl. Pendidikan No. 18, Dusun Tegalarum",
-          "phone": "0857-6789-0123",
-          "established": "2019",
-          "speciality": "Fotokopi, Cetak Digital, Jilid",
-          "dusun": "Tegalarum",
-          "maps_link": "https://maps.google.com/maps?q=Jl.+Pendidikan+No.+18,+Borobudur,+Magelang"
-        },
-        {
-          "id": 15,
-          "name": "Toko Elektronik Maju",
-          "type": "Retail",
-          "owner": "Pak Hadi Mulyono",
-          "address": "Jl. Teknologi No. 33, Dusun Tegalarum",
-          "phone": "0813-4567-8901",
-          "established": "2020",
-          "speciality": "Elektronik, Handphone",
-          "dusun": "Tegalarum",
-          "maps_link": "https://maps.google.com/maps?q=Jl.+Teknologi+No.+33,+Borobudur,+Magelang"
-        },
-        {
-          "id": 16,
-          "name": "Salon Cantik Indah",
-          "type": "Jasa",
-          "owner": "Ibu Dewi Sartika",
-          "address": "Jl. Cantik No. 5, Dusun Ngaran II",
-          "phone": "0812-7890-1234",
-          "established": "2021",
-          "speciality": "Potong Rambut, Facial, Makeup",
-          "dusun": "Ngaran II",
-          "maps_link": "https://maps.google.com/maps?q=Jl.+Cantik+No.+5,+Borobudur,+Magelang"
-        },
-        {
-          "id": 17,
-          "name": "Toko Obat Sehat",
-          "type": "Kesehatan",
-          "owner": "Ibu Siti Nurhaliza",
-          "address": "Jl. Sehat No. 25, Dusun Wringin Putih",
-          "phone": "0816-5678-9012",
-          "established": "2018",
-          "speciality": "Obat-obatan, Alat Kesehatan",
-          "dusun": "Wringin Putih",
-          "maps_link": "https://maps.google.com/maps?q=Jl.+Sehat+No.+25,+Borobudur,+Magelang"
-        },
-        {
           "id": 18,
-          "name": "Warung Nasi Pecel Bu Yanti",
-          "type": "Kuliner",
-          "owner": "Ibu Yanti Susilowati",
-          "address": "Jl. Pecel No. 12, Dusun Ngaran I",
-          "phone": "0824-9012-3456",
-          "established": "2016",
-          "speciality": "Nasi Pecel, Gado-gado",
-          "dusun": "Ngaran I",
+          "nama": "Warung Nasi Pecel Bu Yanti",
+          "kategori": "Kuliner",
+          "pemilik": "Ibu Yanti Susilowati",
+          "alamat": "Jl. Pecel No. 12",
+          "telepon": "0824-9012-3456",
+          "tahun_berdiri": 2016,
+          "spesialisasi": "Nasi Pecel, Gado-gado",
           "maps_link": "https://maps.google.com/maps?q=Jl.+Pecel+No.+12,+Borobudur,+Magelang"
-        },
-        {
-          "id": 19,
-          "name": "Toko Baju Murah",
-          "type": "Retail",
-          "owner": "Ibu Ratna Sari",
-          "address": "Jl. Fashion No. 14, Dusun Ngaran II",
-          "phone": "0821-3456-7890",
-          "established": "2019",
-          "speciality": "Pakaian Pria/Wanita, Aksesoris",
-          "dusun": "Ngaran II",
-          "maps_link": "https://maps.google.com/maps?q=Jl.+Fashion+No.+14,+Borobudur,+Magelang"
-        },
-        {
-          "id": 20,
-          "name": "Warung Es Kelapa Muda",
-          "type": "Kuliner",
-          "owner": "Pak Sugiarto",
-          "address": "Jl. Kelapa No. 9, Dusun Wringin Putih",
-          "phone": "0825-6789-0123",
-          "established": "2020",
-          "speciality": "Es Kelapa Muda, Minuman Segar",
-          "dusun": "Wringin Putih",
-          "maps_link": "https://maps.google.com/maps?q=Jl.+Kelapa+No.+9,+Borobudur,+Magelang"
         }
       ],
       "fasilitas_umum": [
         {
           "nama": "Balai Desa Borobudur",
-          "alamat": "Jl. Raya Borobudur No. 1, Dusun Ngaran I",
-          "jenis": "Pemerintahan"
-        },
-        {
-          "nama": "Puskesmas Borobudur",
-          "alamat": "Jl. Kesehatan No. 15, Dusun Ngaran II",
-          "jenis": "Kesehatan"
+          "alamat": "Jl. Raya Borobudur No. 1",
+          "kategori": "Pemerintahan"
         },
         {
           "nama": "SD Negeri Borobudur 1",
-          "alamat": "Jl. Pendidikan No. 8, Dusun Ngaran I",
-          "jenis": "Pendidikan"
+          "alamat": "Jl. Pendidikan No. 8",
+          "kategori": "Pendidikan"
+        }
+      ],
+      "statistik_umkm": {
+        "total": 5,
+        "kuliner": 2,
+        "kerajinan": 1,
+        "jasa": 2,
+        "retail": 0,
+        "kesehatan": 0
+      }
+    },
+    {
+      "id": "ngaran-2",
+      "nama_dusun": "Ngaran II",
+      "status": "Dusun Pendukung",
+      "data_demografis": {
+        "jumlah_penduduk": 2184,
+        "persentase_dari_total": "24.4%",
+        "rt_rw": "RT 16-30, RW 04-06",
+        "jumlah_rt": 15,
+        "jumlah_rw": 3
+      },
+      "karakteristik": {
+        "posisi": "Wilayah Tengah",
+        "akses_utama": "Jl. Mendut, Jl. Candi",
+        "keunggulan": "Pusat kerajinan dan layanan kesehatan"
+      },
+      "umkm_list": [
+        {
+          "id": 5,
+          "nama": "Warung Soto Ayam Pak Harto",
+          "kategori": "Kuliner",
+          "pemilik": "Pak Harto Subagyo",
+          "alamat": "Jl. Mendut No. 23",
+          "telepon": "0813-9876-5432",
+          "tahun_berdiri": 2016,
+          "spesialisasi": "Soto Ayam, Rawon",
+          "maps_link": "https://maps.google.com/maps?q=Jl.+Mendut+No.+23,+Borobudur,+Magelang"
+        },
+        {
+          "id": 6,
+          "nama": "Batik Borobudur Heritage",
+          "kategori": "Kerajinan",
+          "pemilik": "Ibu Ratna Dewi",
+          "alamat": "Jl. Candi No. 17",
+          "telepon": "0812-1357-2468",
+          "tahun_berdiri": 2017,
+          "spesialisasi": "Batik Tulis, Batik Cap",
+          "maps_link": "https://maps.google.com/maps?q=Jl.+Candi+No.+17,+Borobudur,+Magelang"
+        },
+        {
+          "id": 7,
+          "nama": "Toko Oleh-oleh Borobudur",
+          "kategori": "Retail",
+          "pemilik": "Pak Joko Susilo",
+          "alamat": "Jl. Syailendra No. 5",
+          "telepon": "0821-4567-8901",
+          "tahun_berdiri": 2014,
+          "spesialisasi": "Oleh-oleh Khas, Makanan Ringan",
+          "maps_link": "https://maps.google.com/maps?q=Jl.+Syailendra+No.+5,+Borobudur,+Magelang"
+        },
+        {
+          "id": 16,
+          "nama": "Salon Cantik Indah",
+          "kategori": "Jasa",
+          "pemilik": "Ibu Dewi Sartika",
+          "alamat": "Jl. Cantik No. 5",
+          "telepon": "0812-7890-1234",
+          "tahun_berdiri": 2021,
+          "spesialisasi": "Potong Rambut, Facial, Makeup",
+          "maps_link": "https://maps.google.com/maps?q=Jl.+Cantik+No.+5,+Borobudur,+Magelang"
+        },
+        {
+          "id": 19,
+          "nama": "Toko Baju Murah",
+          "kategori": "Retail",
+          "pemilik": "Ibu Ratna Sari",
+          "alamat": "Jl. Fashion No. 14",
+          "telepon": "0821-3456-7890",
+          "tahun_berdiri": 2019,
+          "spesialisasi": "Pakaian Pria/Wanita, Aksesoris",
+          "maps_link": "https://maps.google.com/maps?q=Jl.+Fashion+No.+14,+Borobudur,+Magelang"
+        }
+      ],
+      "fasilitas_umum": [
+        {
+          "nama": "Puskesmas Borobudur",
+          "alamat": "Jl. Kesehatan No. 15",
+          "kategori": "Kesehatan"
         },
         {
           "nama": "Masjid Agung Borobudur",
-          "alamat": "Jl. Masjid Agung No. 2, Dusun Ngaran II",
-          "jenis": "Ibadah"
-        },
-        {
-          "nama": "Pasar Tradisional Borobudur",
-          "alamat": "Jl. Pasar No. 20, Dusun Wringin Putih",
-          "jenis": "Ekonomi"
+          "alamat": "Jl. Masjid Agung No. 2",
+          "kategori": "Ibadah"
         }
       ],
-      "potensi_wisata": [
+      "statistik_umkm": {
+        "total": 5,
+        "kuliner": 1,
+        "kerajinan": 1,
+        "jasa": 1,
+        "retail": 2,
+        "kesehatan": 0
+      }
+    },
+    {
+      "id": "wringin-putih",
+      "nama_dusun": "Wringin Putih",
+      "status": "Dusun Berkembang",
+      "data_demografis": {
+        "jumlah_penduduk": 2298,
+        "persentase_dari_total": "25.7%",
+        "rt_rw": "RT 31-45, RW 07-09",
+        "jumlah_rt": 15,
+        "jumlah_rw": 3
+      },
+      "karakteristik": {
+        "posisi": "Wilayah Strategis",
+        "akses_utama": "Jl. Wringin Putih, Jl. Bukit Rhema",
+        "keunggulan": "Dekat dengan spot wisata Gereja Ayam dan area komersial"
+      },
+      "umkm_list": [
         {
-          "nama": "Candi Borobudur",
-          "jarak": "2 km dari pusat desa",
-          "deskripsi": "Candi Buddha terbesar di dunia"
+          "id": 8,
+          "nama": "Laundry Cepat Bersih",
+          "kategori": "Jasa",
+          "pemilik": "Ibu Maya Sari",
+          "alamat": "Jl. Wringin Putih No. 15",
+          "telepon": "0823-7890-1234",
+          "tahun_berdiri": 2021,
+          "spesialisasi": "Laundry Kiloan, Dry Cleaning",
+          "maps_link": "https://maps.google.com/maps?q=Jl.+Wringin+Putih+No.+15,+Borobudur,+Magelang"
         },
         {
-          "nama": "Sunrise Point Punthuk Setumbu",
-          "jarak": "3.5 km dari pusat desa",
-          "deskripsi": "Spot terbaik melihat sunrise Borobudur"
+          "id": 9,
+          "nama": "Cafe Sunrise View",
+          "kategori": "Kuliner",
+          "pemilik": "Pak Deni Kurniawan",
+          "alamat": "Jl. Bukit Rhema No. 3",
+          "telepon": "0834-5678-9012",
+          "tahun_berdiri": 2020,
+          "spesialisasi": "Kopi Lokal, Makanan Barat",
+          "maps_link": "https://maps.google.com/maps?q=Jl.+Bukit+Rhema+No.+3,+Borobudur,+Magelang"
         },
         {
-          "nama": "Candi Mendut",
-          "jarak": "3 km dari pusat desa",
-          "deskripsi": "Candi Buddha dengan arca Dhyani Buddha"
+          "id": 10,
+          "nama": "Kerajinan Gerabah Tradisional",
+          "kategori": "Kerajinan",
+          "pemilik": "Pak Sukiman",
+          "alamat": "Jl. Kerajinan No. 28",
+          "telepon": "0816-2345-6789",
+          "tahun_berdiri": 2013,
+          "spesialisasi": "Gerabah, Keramik Tradisional",
+          "maps_link": "https://maps.google.com/maps?q=Jl.+Kerajinan+No.+28,+Borobudur,+Magelang"
         },
         {
-          "nama": "Gereja Ayam (Bukit Rhema)",
-          "jarak": "5 km dari pusat desa",
-          "deskripsi": "Bangunan unik berbentuk burung merpati"
+          "id": 17,
+          "nama": "Toko Obat Sehat",
+          "kategori": "Kesehatan",
+          "pemilik": "Ibu Siti Nurhaliza",
+          "alamat": "Jl. Sehat No. 25",
+          "telepon": "0816-5678-9012",
+          "tahun_berdiri": 2018,
+          "spesialisasi": "Obat-obatan, Alat Kesehatan",
+          "maps_link": "https://maps.google.com/maps?q=Jl.+Sehat+No.+25,+Borobudur,+Magelang"
+        },
+        {
+          "id": 20,
+          "nama": "Warung Es Kelapa Muda",
+          "kategori": "Kuliner",
+          "pemilik": "Pak Sugiarto",
+          "alamat": "Jl. Kelapa No. 9",
+          "telepon": "0825-6789-0123",
+          "tahun_berdiri": 2020,
+          "spesialisasi": "Es Kelapa Muda, Minuman Segar",
+          "maps_link": "https://maps.google.com/maps?q=Jl.+Kelapa+No.+9,+Borobudur,+Magelang"
         }
-      ]
+      ],
+      "fasilitas_umum": [
+        {
+          "nama": "Pasar Tradisional Borobudur",
+          "alamat": "Jl. Pasar No. 20",
+          "kategori": "Ekonomi"
+        }
+      ],
+      "statistik_umkm": {
+        "total": 5,
+        "kuliner": 2,
+        "kerajinan": 1,
+        "jasa": 1,
+        "retail": 0,
+        "kesehatan": 1
+      }
     }
-  ]
+  ],
+  "potensi_wisata": [
+    {
+      "nama": "Candi Borobudur",
+      "jarak_dari_pusat": "2 km",
+      "deskripsi": "Candi Buddha terbesar di dunia, UNESCO World Heritage Site",
+      "kategori": "Wisata Sejarah",
+      "akses_terdekat": "Ngaran I"
+    },
+    {
+      "nama": "Sunrise Point Punthuk Setumbu",
+      "jarak_dari_pusat": "3.5 km",
+      "deskripsi": "Spot terbaik untuk melihat sunrise dengan latar belakang Candi Borobudur",
+      "kategori": "Wisata Alam",
+      "akses_terdekat": "Ngaran II"
+    },
+    {
+      "nama": "Candi Mendut",
+      "jarak_dari_pusat": "3 km",
+      "deskripsi": "Candi Buddha dengan arca Dhyani Buddha yang megah",
+      "kategori": "Wisata Sejarah",
+      "akses_terdekat": "Ngaran II"
+    },
+    {
+      "nama": "Gereja Ayam (Bukit Rhema)",
+      "jarak_dari_pusat": "5 km",
+      "deskripsi": "Bangunan unik berbentuk burung merpati dengan pemandangan indah",
+      "kategori": "Wisata Religi & Unik",
+      "akses_terdekat": "Wringin Putih"
+    }
+  ],
+  "ringkasan_statistik": {
+    "total_penduduk_3_dusun": 6718,
+    "persentase_dari_total_desa": "75.1%",
+    "total_umkm_3_dusun": 15,
+    "distribusi_umkm_per_dusun": {
+      "ngaran_1": 5,
+      "ngaran_2": 5,
+      "wringin_putih": 5
+    },
+    "kategori_umkm_dominan": "Kuliner dan Jasa",
+    "fasilitas_umum_tersedia": 5,
+    "potensi_wisata_terdekat": 4
+  }
 }
