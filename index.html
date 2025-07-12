@@ -11,109 +11,82 @@
     <link rel="stylesheet" href="assets/css/style.css" />
   </head>
   <body>
-    <div class="container">
-      <header class="header">
-        <h1>🗺️ Peta Digital Desa Borobudur</h1>
-        <p>Kecamatan Borobudur, Kabupaten Magelang, Jawa Tengah</p>
-      </header>
-
-      <div class="map-container">
-        <div id="map"></div>
-        <div class="map-legend">
-          <h3>Legenda</h3>
-          <div class="legend-item">
-            <span class="legend-color" style="background-color: #e74c3c"></span>
-            <span>Pusat Desa</span>
-          </div>
-          <div class="legend-item">
-            <span class="legend-color" style="background-color: #3498db"></span>
-            <span>Dusun</span>
-          </div>
-          <div class="legend-item">
-            <span class="legend-color" style="background-color: #f39c12"></span>
-            <span>Wisata</span>
-          </div>
-          <div class="legend-item">
-            <span class="legend-color" style="background-color: #27ae60"></span>
-            <span>UMKM</span>
-          </div>
-        </div>
+    <header class="header">
+      <div class="container">
+        <h1>Peta Digital Desa Borobudur</h1>
+        <p>Jelajahi dusun-dusun di Desa Borobudur beserta potensi UMKM-nya</p>
       </div>
+    </header>
 
-      <div class="info-section">
-        <div class="village-info">
-          <h2>📍 Informasi Desa</h2>
+    <main class="main">
+      <div class="container">
+        <!-- Dropdown Pilihan Dusun -->
+        <div class="map-controls">
+          <label for="dusun-select">Pilih Dusun:</label>
+          <select id="dusun-select" class="select-dusun">
+            <option value="">-- Pilih Dusun --</option>
+          </select>
+        </div>
+
+        <!-- Peta -->
+        <div id="map" class="map-container"></div>
+
+        <!-- Informasi Dusun -->
+        <div id="dusun-info" class="dusun-info hidden">
+          <div class="info-header">
+            <h2 id="dusun-nama"></h2>
+            <span id="dusun-status" class="status-badge"></span>
+          </div>
+
           <div class="info-grid">
             <div class="info-card">
-              <h3>Data Administratif</h3>
-              <p><strong>Kepala Desa:</strong> Pak Suryanto Widodo</p>
-              <p><strong>Jumlah Penduduk:</strong> 8,945 jiwa</p>
-              <p><strong>Luas Wilayah:</strong> 25.8 km²</p>
-              <p><strong>Jumlah Dusun:</strong> 4 dusun</p>
+              <h3>Data Demografis</h3>
+              <div id="demografis-content"></div>
             </div>
+
             <div class="info-card">
-              <h3>Potensi Ekonomi</h3>
-              <p><strong>Total UMKM:</strong> 20 unit</p>
-              <p>
-                <strong>Sektor Unggulan:</strong> Pariwisata, Kuliner,
-                Kerajinan, Jasa
-              </p>
-              <p><strong>Status:</strong> Desa Wisata</p>
-            </div>
-            <div class="info-card">
-              <h3>Potensi Wisata</h3>
-              <p><strong>Daya Tarik Utama:</strong> Candi Borobudur</p>
-              <p><strong>Jarak ke Candi:</strong> 2 km</p>
-              <p>
-                <strong>Fasilitas:</strong> Homestay, Rental Sepeda, Souvenir
-                Shop
-              </p>
+              <h3>Potensi Dusun</h3>
+              <p id="potensi-content"></p>
             </div>
           </div>
         </div>
 
-        <div class="dusun-section">
-          <h2>🏘️ Informasi Dusun</h2>
-          <div class="dusun-tabs">
-            <button class="tab-button active" data-dusun="ngaran-1">
-              Ngaran I
-            </button>
-            <button class="tab-button" data-dusun="ngaran-2">Ngaran II</button>
-            <button class="tab-button" data-dusun="wringin-putih">
-              Wringin Putih
-            </button>
+        <!-- UMKM Section -->
+        <div id="umkm-section" class="umkm-section hidden">
+          <div class="section-header">
+            <h2>UMKM di Dusun</h2>
+            <div class="filter-controls">
+              <label for="kategori-filter">Filter Kategori:</label>
+              <select id="kategori-filter" class="filter-select">
+                <option value="">Semua Kategori</option>
+              </select>
+            </div>
           </div>
 
-          <div class="dusun-content" id="dusun-info">
-            <!-- Content akan diisi oleh JavaScript -->
-          </div>
-        </div>
-
-        <div class="umkm-section">
-          <h2>🏪 Daftar UMKM</h2>
-          <div class="filter-section">
-            <select id="kategori-filter">
-              <option value="all">Semua Kategori</option>
-              <option value="kuliner">Kuliner</option>
-              <option value="kerajinan">Kerajinan</option>
-              <option value="jasa">Jasa</option>
-              <option value="retail">Retail</option>
-              <option value="kesehatan">Kesehatan</option>
-            </select>
-            <select id="dusun-filter">
-              <option value="all">Semua Dusun</option>
-              <option value="ngaran-1">Ngaran I</option>
-              <option value="ngaran-2">Ngaran II</option>
-              <option value="wringin-putih">Wringin Putih</option>
-            </select>
-          </div>
-
-          <div class="umkm-grid" id="umkm-list">
-            <!-- UMKM cards akan diisi oleh JavaScript -->
+          <div class="table-container">
+            <table id="umkm-table" class="umkm-table">
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Nama UMKM</th>
+                  <th>Kategori</th>
+                  <th>Deskripsi</th>
+                  <th>Nomor Telepon</th>
+                  <th>Lokasi</th>
+                </tr>
+              </thead>
+              <tbody id="umkm-tbody"></tbody>
+            </table>
           </div>
         </div>
       </div>
-    </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>&copy; 2025 Peta Digital Desa Borobudur desa.</p>
+      </div>
+    </footer>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="assets/js/app.js"></script>
