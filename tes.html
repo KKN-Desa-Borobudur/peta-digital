@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Village JSON Data Manager</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        color: #333;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+
+      .header h1 {
+        color: #2c3e50;
+        font-size: 2.5em;
+        margin-bottom: 10px;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .header p {
+        color: #7f8c8d;
+        font-size: 1.2em;
+      }
+
+      .main-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-bottom: 30px;
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .card h2 {
+        color: #2c3e50;
+        margin-bottom: 20px;
+        font-size: 1.8em;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #2c3e50;
+        font-weight: 600;
+      }
+
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #e0e6ed;
+        border-radius: 10px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.8);
+      }
+
+      .form-group input:focus,
+      .form-group select:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+      }
+
+      .form-group textarea {
+        resize: vertical;
+        min-height: 100px;
+      }
+
+      .btn {
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        margin-right: 10px;
+        margin-bottom: 10px;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+      }
+
+      .btn-secondary {
+        background: linear-gradient(45deg, #95a5a6, #7f8c8d);
+      }
+
+      .btn-danger {
+        background: linear-gradient(45deg, #e74c3c, #c0392b);
+      }
+
+      .btn-success {
+        background: linear-gradient(45deg, #27ae60, #2ecc71);
+      }
+
+      .village-list {
+        grid-column: 1 / -1;
+      }
+
+      .village-item {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-left: 5px solid #667eea;
+        transition: all 0.3s ease;
+      }
+
+      .village-item:hover {
+        transform: translateX(5px);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .village-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .village-header h3 {
+        color: #2c3e50;
+        font-size: 1.5em;
+      }
+
+      .status-badge {
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.9em;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .status-utama {
+        background: linear-gradient(45deg, #f39c12, #e67e22);
+        color: white;
+      }
+
+      .status-pendukung {
+        background: linear-gradient(45deg, #3498db, #2980b9);
+        color: white;
+      }
+
+      .status-wisata {
+        background: linear-gradient(45deg, #e74c3c, #c0392b);
+        color: white;
+      }
+
+      .village-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 15px;
+      }
+
+      .detail-item {
+        background: rgba(102, 126, 234, 0.1);
+        padding: 10px;
+        border-radius: 8px;
+      }
+
+      .detail-item strong {
+        color: #2c3e50;
+      }
+
+      .umkm-list {
+        margin-top: 15px;
+      }
+
+      .umkm-item {
+        background: rgba(118, 75, 162, 0.1);
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        border-left: 3px solid #764ba2;
+      }
+
+      .output-section {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      }
+
+      .json-output {
+        background: #2c3e50;
+        color: #ecf0f1;
+        padding: 20px;
+        border-radius: 10px;
+        font-family: "Courier New", monospace;
+        overflow-x: auto;
+        max-height: 400px;
+        white-space: pre-wrap;
+        font-size: 14px;
+      }
+
+      .coords-input {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      @media (max-width: 768px) {
+        .main-content {
+          grid-template-columns: 1fr;
+        }
+
+        .village-details {
+          grid-template-columns: 1fr;
+        }
+
+        .coords-input {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🏘️ Village JSON Data Manager</h1>
+        <p>Kelola data dusun dan UMKM dengan mudah</p>
+      </div>
+
+      <div class="main-content">
+        <div class="card">
+          <h2>➕ Tambah Dusun Baru</h2>
+          <form id="villageForm">
+            <div class="form-group">
+              <label for="villageId">ID Dusun:</label>
+              <input
+                type="text"
+                id="villageId"
+                placeholder="contoh: ngaran-3"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="villageName">Nama Dusun:</label>
+              <input
+                type="text"
+                id="villageName"
+                placeholder="contoh: Ngaran III"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="villageStatus">Status Dusun:</label>
+              <select id="villageStatus" required>
+                <option value="">Pilih Status</option>
+                <option value="Dusun Utama">Dusun Utama</option>
+                <option value="Dusun Pendukung">Dusun Pendukung</option>
+                <option value="Dusun Wisata">Dusun Wisata</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Koordinat:</label>
+              <div class="coords-input">
+                <input
+                  type="number"
+                  step="any"
+                  id="villageLat"
+                  placeholder="Latitude"
+                  required
+                />
+                <input
+                  type="number"
+                  step="any"
+                  id="villageLng"
+                  placeholder="Longitude"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="villagePopulation">Jumlah Penduduk:</label>
+              <input
+                type="number"
+                id="villagePopulation"
+                placeholder="contoh: 1500"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="villageRtRw">RT/RW:</label>
+              <input
+                type="text"
+                id="villageRtRw"
+                placeholder="contoh: RT 01-10, RW 01-02"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="villageRtCount">Jumlah RT:</label>
+              <input
+                type="number"
+                id="villageRtCount"
+                placeholder="contoh: 10"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="villageRwCount">Jumlah RW:</label>
+              <input
+                type="number"
+                id="villageRwCount"
+                placeholder="contoh: 2"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="villagePotensi">Potensi Dusun:</label>
+              <textarea
+                id="villagePotensi"
+                placeholder="Deskripsikan potensi unggulan dusun..."
+                required
+              ></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-success">Tambah Dusun</button>
+          </form>
+        </div>
+
+        <div class="card">
+          <h2>🏪 Tambah UMKM</h2>
+          <form id="umkmForm">
+            <div class="form-group">
+              <label for="umkmVillage">Pilih Dusun:</label>
+              <select id="umkmVillage" required>
+                <option value="">Pilih Dusun</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="umkmName">Nama UMKM:</label>
+              <input
+                type="text"
+                id="umkmName"
+                placeholder="contoh: Warung Makan Sejahtera"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="umkmCategory">Kategori:</label>
+              <select id="umkmCategory" required>
+                <option value="">Pilih Kategori</option>
+                <option value="Toko">Toko</option>
+                <option value="Makanan">Makanan</option>
+                <option value="Pertanian">Pertanian</option>
+                <option value="Jasa">Jasa</option>
+                <option value="Kerajinan">Kerajinan</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="umkmDescription">Deskripsi:</label>
+              <textarea
+                id="umkmDescription"
+                placeholder="Deskripsikan produk/layanan UMKM..."
+                required
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="umkmPhone">Telepon:</label>
+              <input
+                type="tel"
+                id="umkmPhone"
+                placeholder="contoh: 081234567890"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Koordinat UMKM:</label>
+              <div class="coords-input">
+                <input
+                  type="number"
+                  step="any"
+                  id="umkmLat"
+                  placeholder="Latitude"
+                  required
+                />
+                <input
+                  type="number"
+                  step="any"
+                  id="umkmLng"
+                  placeholder="Longitude"
+                  required
+                />
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-success">Tambah UMKM</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card village-list">
+        <h2>🏘️ Daftar Dusun</h2>
+        <div id="villagesList"></div>
+      </div>
+
+      <div class="output-section">
+        <h2>📄 Output JSON</h2>
+        <button class="btn" onclick="downloadJson()">💾 Download JSON</button>
+        <button class="btn btn-secondary" onclick="copyToClipboard()">
+          📋 Copy to Clipboard
+        </button>
+        <button class="btn btn-danger" onclick="clearAllData()">
+          🗑️ Hapus Semua Data
+        </button>
+        <div class="json-output" id="jsonOutput"></div>
+      </div>
+    </div>
+
+    <script>
+      // Data villages yang akan dikelola
+      let villagesData = [
+        {
+          id: "ngaran-1",
+          nama_dusun: "Ngaran I",
+          status: "Dusun Utama",
+          koordinat: [-7.608393, 110.209858],
+          data_demografis: {
+            jumlah_penduduk: 1876,
+            persentase_dari_total: "21.0%",
+            rt_rw: "RT 01-15, RW 01-03",
+            jumlah_rt: 15,
+            jumlah_rw: 3,
+          },
+          potensi:
+            "Pusat kerajinan tradisional dan produksi keripik tempe yang terkenal di seluruh kabupaten.",
+          umkm: [
+            {
+              nama: "Toko Kelontong Berkah",
+              kategori: "Toko",
+              deskripsi:
+                "Menyediakan kebutuhan sehari-hari warga dusun dengan harga bersaing.",
+              telepon: "081987654321",
+              koordinat: [-7.608193, 110.210058],
+              link_gmaps: "https://maps.app.goo.gl/ngaran1-toko",
+            },
+          ],
+        },
+        {
+          id: "ngaran-2",
+          nama_dusun: "Ngaran II",
+          status: "Dusun Pendukung",
+          koordinat: [-7.6035, 110.2055],
+          data_demografis: {
+            jumlah_penduduk: 2184,
+            persentase_dari_total: "24.4%",
+            rt_rw: "RT 16-30, RW 04-06",
+            jumlah_rt: 15,
+            jumlah_rw: 3,
+          },
+          potensi:
+            "Pusat pertanian dan penghasil sayuran segar dengan sistem irigasi yang baik.",
+          umkm: [
+            {
+              nama: "Toko Sayur Ngaran",
+              kategori: "Toko",
+              deskripsi:
+                "Menjual sayuran segar dari petani lokal dengan kualitas terbaik.",
+              telepon: "081234567890",
+              koordinat: [-7.6033, 110.2057],
+              link_gmaps: "https://maps.app.goo.gl/ngaran2-sayur",
+            },
+            {
+              nama: "Warung Makan Mbok Iyem",
+              kategori: "Makanan",
+              deskripsi:
+                "Masakan rumahan khas dusun dengan menu sayur segar dan lauk pauk tradisional.",
+              telepon: "082112345678",
+              koordinat: [-7.6037, 110.2053],
+              link_gmaps: "https://maps.app.goo.gl/ngaran2-warung",
+            },
+            {
+              nama: "Kelompok Tani Subur Jaya",
+              kategori: "Pertanian",
+              deskripsi:
+                "Koperasi petani yang menjual hasil panen langsung ke konsumen.",
+              telepon: "083345678901",
+              koordinat: [-7.6031, 110.2059],
+              link_gmaps: "https://maps.app.goo.gl/ngaran2-tani",
+            },
+            {
+              nama: "Bengkel Motor Pak Tono",
+              kategori: "Jasa",
+              deskripsi:
+                "Servis dan perbaikan kendaraan bermotor dengan harga terjangkau.",
+              telepon: "084567890123",
+              koordinat: [-7.6039, 110.2051],
+              link_gmaps: "https://maps.app.goo.gl/ngaran2-bengkel",
+            },
+            {
+              nama: "Salon Cantik Sari",
+              kategori: "Jasa",
+              deskripsi:
+                "Layanan potong rambut, creambath, dan perawatan kecantikan.",
+              telepon: "085678901234",
+              koordinat: [-7.6033, 110.2061],
+              link_gmaps: "https://maps.app.goo.gl/ngaran2-salon",
+            },
+          ],
+        },
+        {
+          id: "borobudur-tengah",
+          nama_dusun: "Borobudur Tengah",
+          status: "Dusun Wisata",
+          koordinat: [-7.6079, 110.2034],
+          data_demografis: {
+            jumlah_penduduk: 1654,
+            persentase_dari_total: "18.5%",
+            rt_rw: "RT 31-42, RW 07-09",
+            jumlah_rt: 12,
+            jumlah_rw: 3,
+          },
+          potensi:
+            "Dusun strategis dekat Candi Borobudur dengan potensi wisata dan kuliner yang tinggi.",
+          umkm: [
+            {
+              nama: "Resto Borobudur Heritage",
+              kategori: "Makanan",
+              deskripsi:
+                "Restoran dengan menu tradisional Jawa dan view langsung ke Candi Borobudur.",
+              telepon: "081111222333",
+              koordinat: [-7.6077, 110.2036],
+              link_gmaps: "https://maps.app.goo.gl/borobudur-resto",
+            },
+            {
+              nama: "Souvenir Candi Mas",
+              kategori: "Kerajinan",
+              deskripsi:
+                "Toko souvenir dengan berbagai kerajinan khas Borobudur dan miniatur candi.",
+              telepon: "082222333444",
+              koordinat: [-7.6081, 110.2032],
+              link_gmaps: "https://maps.app.goo.gl/borobudur-souvenir",
+            },
+            {
+              nama: "Homestay Borobudur Asri",
+              kategori: "Jasa",
+              deskripsi:
+                "Penginapan homestay dengan suasana tradisional dan pelayanan ramah.",
+              telepon: "083333444555",
+              koordinat: [-7.6075, 110.2038],
+              link_gmaps: "https://maps.app.goo.gl/borobudur-homestay",
+            },
+            {
+              nama: "Warung Gudeg Candi",
+              kategori: "Makanan",
+              deskripsi:
+                "Gudeg spesial dengan bumbu rahasia dan porsi yang mengenyangkan.",
+              telepon: "084444555666",
+              koordinat: [-7.6083, 110.203],
+              link_gmaps: "https://maps.app.goo.gl/borobudur-gudeg",
+            },
+            {
+              nama: "Toko Batik Borobudur",
+              kategori: "Kerajinan",
+              deskripsi:
+                "Batik tulis dan cap dengan motif khas Borobudur, tersedia custom design.",
+              telepon: "085555666777",
+              koordinat: [-7.6073, 110.204],
+              link_gmaps: "https://maps.app.goo.gl/borobudur-batik",
+            },
+            {
+              nama: "Angkringan Pak Mul",
+              kategori: "Makanan",
+              deskripsi:
+                "Angkringan legendaris dengan menu lengkap dan harga mahasiswa.",
+              telepon: "086666777888",
+              koordinat: [-7.6085, 110.2028],
+              link_gmaps: "https://maps.app.goo.gl/borobudur-angkringan",
+            },
+            {
+              nama: "Rental Motor Borobudur",
+              kategori: "Jasa",
+              deskripsi:
+                "Penyewaan motor untuk wisatawan dengan tarif harian dan mingguan.",
+              telepon: "087777888999",
+              koordinat: [-7.6071, 110.2042],
+              link_gmaps: "https://maps.app.goo.gl/borobudur-rental",
+            },
+          ],
+        },
+      ];
+
+      // Fungsi untuk menghitung persentase dari total
+      function calculatePercentage() {
+        const totalPopulation = villagesData.reduce(
+          (sum, village) => sum + village.data_demografis.jumlah_penduduk,
+          0
+        );
+        villagesData.forEach((village) => {
+          const percentage = (
+            (village.data_demografis.jumlah_penduduk / totalPopulation) *
+            100
+          ).toFixed(1);
+          village.data_demografis.persentase_dari_total = percentage + "%";
+        });
+      }
+
+      // Fungsi untuk memperbarui dropdown dusun
+      function updateVillageDropdown() {
+        const dropdown = document.getElementById("umkmVillage");
+        dropdown.innerHTML = '<option value="">Pilih Dusun</option>';
+
+        villagesData.forEach((village) => {
+          const option = document.createElement("option");
+          option.value = village.id;
+          option.textContent = village.nama_dusun;
+          dropdown.appendChild(option);
+        });
+      }
+
+      // Fungsi untuk menampilkan daftar dusun
+      function displayVillages() {
+        const container = document.getElementById("villagesList");
+        container.innerHTML = "";
+
+        villagesData.forEach((village, index) => {
+          const villageDiv = document.createElement("div");
+          villageDiv.className = "village-item";
+
+          const statusClass = village.status
+            .toLowerCase()
+            .replace(/\s+/g, "-")
+            .replace("dusun-", "status-");
+
+          villageDiv.innerHTML = `
+                    <div class="village-header">
+                        <h3>${village.nama_dusun}</h3>
+                        <span class="status-badge ${statusClass}">${
+            village.status
+          }</span>
+                    </div>
+                    <div class="village-details">
+                        <div class="detail-item">
+                            <strong>Penduduk:</strong> ${village.data_demografis.jumlah_penduduk.toLocaleString(
+                              "id-ID"
+                            )} orang (${
+            village.data_demografis.persentase_dari_total
+          })
+                        </div>
+                        <div class="detail-item">
+                            <strong>RT/RW:</strong> ${
+                              village.data_demografis.rt_rw
+                            }
+                        </div>
+                        <div class="detail-item">
+                            <strong>Koordinat:</strong> ${
+                              village.koordinat[0]
+                            }, ${village.koordinat[1]}
+                        </div>
+                        <div class="detail-item">
+                            <strong>Jumlah UMKM:</strong> ${village.umkm.length}
+                        </div>
+                    </div>
+                    <p><strong>Potensi:</strong> ${village.potensi}</p>
+                    <div class="umkm-list">
+                        <strong>UMKM:</strong>
+                        ${village.umkm
+                          .map(
+                            (umkm) => `
+                            <div class="umkm-item">
+                                <strong>${umkm.nama}</strong> (${umkm.kategori})<br>
+                                <small>${umkm.deskripsi}</small><br>
+                                <small>📞 ${umkm.telepon}</small>
+                            </div>
+                        `
+                          )
+                          .join("")}
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <button class="btn btn-danger" onclick="deleteVillage(${index})">🗑️ Hapus Dusun</button>
+                    </div>
+                `;
+
+          container.appendChild(villageDiv);
+        });
+      }
+
+      // Fungsi untuk memperbarui output JSON
+      function updateJsonOutput() {
+        const output = document.getElementById("jsonOutput");
+        output.textContent = JSON.stringify(villagesData, null, 2);
+      }
+
+      // Event listener untuk form dusun
+      document
+        .getElementById("villageForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const newVillage = {
+            id: document.getElementById("villageId").value,
+            nama_dusun: document.getElementById("villageName").value,
+            status: document.getElementById("villageStatus").value,
+            koordinat: [
+              parseFloat(document.getElementById("villageLat").value),
+              parseFloat(document.getElementById("villageLng").value),
+            ],
+            data_demografis: {
+              jumlah_penduduk: parseInt(
+                document.getElementById("villagePopulation").value
+              ),
+              persentase_dari_total: "0%", // Akan dihitung ulang
+              rt_rw: document.getElementById("villageRtRw").value,
+              jumlah_rt: parseInt(
+                document.getElementById("villageRtCount").value
+              ),
+              jumlah_rw: parseInt(
+                document.getElementById("villageRwCount").value
+              ),
+            },
+            potensi: document.getElementById("villagePotensi").value,
+            umkm: [],
+          };
+
+          villagesData.push(newVillage);
+          calculatePercentage();
+          updateDisplay();
+
+          this.reset();
+          alert("Dusun berhasil ditambahkan!");
+        });
+
+      // Event listener untuk form UMKM
+      document
+        .getElementById("umkmForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const villageId = document.getElementById("umkmVillage").value;
+          const village = villagesData.find((v) => v.id === villageId);
+
+          if (village) {
+            const newUmkm = {
+              nama: document.getElementById("umkmName").value,
+              kategori: document.getElementById("umkmCategory").value,
+              deskripsi: document.getElementById("umkmDescription").value,
+              telepon: document.getElementById("umkmPhone").value,
+              koordinat: [
+                parseFloat(document.getElementById("umkmLat").value),
+                parseFloat(document.getElementById("umkmLng").value),
+              ],
+              link_gmaps: `https://maps.app.goo.gl/${villageId}-${Date.now()}`,
+            };
+
+            village.umkm.push(newUmkm);
+            updateDisplay();
+
+            this.reset();
+            alert("UMKM berhasil ditambahkan!");
+          } else {
+            alert("Pilih dusun terlebih dahulu!");
+          }
+        });
+
+      // Fungsi untuk menghapus dusun
+      function deleteVillage(index) {
+        if (confirm("Apakah Anda yakin ingin menghapus dusun ini?")) {
+          villagesData.splice(index, 1);
+          calculatePercentage();
+          updateDisplay();
+          alert("Dusun berhasil dihapus!");
+        }
+      }
+
+      // Fungsi untuk menghapus semua data
+      function clearAllData() {
+        if (
+          confirm(
+            "Apakah Anda yakin ingin menghapus semua data? Tindakan ini tidak dapat dibatalkan!"
+          )
+        ) {
+          villagesData = [];
+          updateDisplay();
+          alert("Semua data berhasil dihapus!");
+        }
+      }
+
+      // Fungsi untuk download JSON
+      function downloadJson() {
+        const dataStr = JSON.stringify(villagesData, null, 2);
+        const dataUri =
+          "data:application/json;charset=utf-8," + encodeURIComponent(dataStr);
+
+        const exportFileDefaultName = "villages_data.json";
+
+        const linkElement = document.createElement("a");
+        linkElement.setAttribute("href", dataUri);
+        linkElement.setAttribute("download", exportFileDefaultName);
+        linkElement.click();
+      }
+
+      // Fungsi untuk copy ke clipboard
+      function copyToClipboard() {
+        const jsonText = JSON.stringify(villagesData, null, 2);
+        navigator.clipboard
+          .writeText(jsonText)
+          .then(() => {
+            alert("JSON berhasil disalin ke clipboard!");
+          })
+          .catch((err) => {
+            console.error("Gagal menyalin ke clipboard: ", err);
+            alert(
+              "Gagal menyalin ke clipboard. Silakan salin manual dari text area."
+            );
+          });
+      }
+
+      // Fungsi untuk memperbarui tampilan
+      function updateDisplay() {
+        updateVillageDropdown();
+        displayVillages();
+        updateJsonOutput();
+      }
+
+      // Fungsi untuk load data dari file JSON
+      function loadJsonFile() {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = ".json";
+        input.onchange = function (e) {
+          const file = e.target.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+              try {
+                const data = JSON.parse(event.target.result);
+                villagesData = data;
+                calculatePercentage();
+                updateDisplay();
+                alert("Data berhasil dimuat!");
+              } catch (error) {
+                alert("File JSON tidak valid!");
+                console.error("Error parsing JSON:", error);
+              }
+            };
+            reader.readAsText(file);
+          }
+        };
+        input.click();
+      }
+
+      // Inisialisasi aplikasi
+      document.addEventListener("DOMContentLoaded", function () {
+        calculatePercentage();
+        updateDisplay();
+
+        // Tambahkan tombol load JSON
+        const loadButton = document.createElement("button");
+        loadButton.className = "btn btn-secondary";
+        loadButton.innerHTML = "📁 Load JSON File";
+        loadButton.onclick = loadJsonFile;
+
+        const outputSection = document.querySelector(".output-section");
+        const existingButtons =
+          outputSection.querySelector("h2").nextElementSibling;
+        outputSection.insertBefore(loadButton, existingButtons.nextSibling);
+      });
+
+      // Fungsi utility untuk validasi data
+      function validateVillageData(village) {
+        const required = [
+          "id",
+          "nama_dusun",
+          "status",
+          "koordinat",
+          "data_demografis",
+          "potensi",
+        ];
+        return required.every((field) => village.hasOwnProperty(field));
+      }
+
+      // Fungsi untuk export data ke format CSV
+      function exportToCSV() {
+        let csvContent =
+          "ID,Nama Dusun,Status,Latitude,Longitude,Jumlah Penduduk,Persentase,RT/RW,Jumlah RT,Jumlah RW,Potensi,Jumlah UMKM\n";
+
+        villagesData.forEach((village) => {
+          const row = [
+            village.id,
+            village.nama_dusun,
+            village.status,
+            village.koordinat[0],
+            village.koordinat[1],
+            village.data_demografis.jumlah_penduduk,
+            village.data_demografis.persentase_dari_total,
+            village.data_demografis.rt_rw,
+            village.data_demografis.jumlah_rt,
+            village.data_demografis.jumlah_rw,
+            village.potensi.replace(/,/g, ";"),
+            village.umkm.length,
+          ]
+            .map((field) => `"${field}"`)
+            .join(",");
+          csvContent += row + "\n";
+        });
+
+        const dataUri =
+          "data:text/csv;charset=utf-8," + encodeURIComponent(csvContent);
+        const linkElement = document.createElement("a");
+        linkElement.setAttribute("href", dataUri);
+        linkElement.setAttribute("download", "villages_data.csv");
+        linkElement.click();
+      }
+
+      // Fungsi untuk menambahkan tombol export CSV
+      document.addEventListener("DOMContentLoaded", function () {
+        const csvButton = document.createElement("button");
+        csvButton.className = "btn btn-secondary";
+        csvButton.innerHTML = "📊 Export to CSV";
+        csvButton.onclick = exportToCSV;
+
+        const outputSection = document.querySelector(".output-section");
+        const buttonContainer =
+          outputSection.querySelector("h2").nextElementSibling;
+        buttonContainer.parentNode.insertBefore(
+          csvButton,
+          buttonContainer.nextSibling
+        );
+      });
+
+      // Fungsi untuk search/filter dusun
+      function searchVillages() {
+        const searchTerm = document
+          .getElementById("searchInput")
+          .value.toLowerCase();
+        const filteredVillages = villagesData.filter(
+          (village) =>
+            village.nama_dusun.toLowerCase().includes(searchTerm) ||
+            village.status.toLowerCase().includes(searchTerm) ||
+            village.potensi.toLowerCase().includes(searchTerm)
+        );
+
+        displayFilteredVillages(filteredVillages);
+      }
+
+      function displayFilteredVillages(villages) {
+        const container = document.getElementById("villagesList");
+        container.innerHTML = "";
+
+        villages.forEach((village, index) => {
+          const originalIndex = villagesData.findIndex(
+            (v) => v.id === village.id
+          );
+          const villageDiv = document.createElement("div");
+          villageDiv.className = "village-item";
+
+          const statusClass = village.status
+            .toLowerCase()
+            .replace(/\s+/g, "-")
+            .replace("dusun-", "status-");
+
+          villageDiv.innerHTML = `
+                    <div class="village-header">
+                        <h3>${village.nama_dusun}</h3>
+                        <span class="status-badge ${statusClass}">${
+            village.status
+          }</span>
+                    </div>
+                    <div class="village-details">
+                        <div class="detail-item">
+                            <strong>Penduduk:</strong> ${village.data_demografis.jumlah_penduduk.toLocaleString(
+                              "id-ID"
+                            )} orang (${
+            village.data_demografis.persentase_dari_total
+          })
+                        </div>
+                        <div class="detail-item">
+                            <strong>RT/RW:</strong> ${
+                              village.data_demografis.rt_rw
+                            }
+                        </div>
+                        <div class="detail-item">
+                            <strong>Koordinat:</strong> ${
+                              village.koordinat[0]
+                            }, ${village.koordinat[1]}
+                        </div>
+                        <div class="detail-item">
+                            <strong>Jumlah UMKM:</strong> ${village.umkm.length}
+                        </div>
+                    </div>
+                    <p><strong>Potensi:</strong> ${village.potensi}</p>
+                    <div class="umkm-list">
+                        <strong>UMKM:</strong>
+                        ${village.umkm
+                          .map(
+                            (umkm) => `
+                            <div class="umkm-item">
+                                <strong>${umkm.nama}</strong> (${umkm.kategori})<br>
+                                <small>${umkm.deskripsi}</small><br>
+                                <small>📞 ${umkm.telepon}</small>
+                            </div>
+                        `
+                          )
+                          .join("")}
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <button class="btn btn-danger" onclick="deleteVillage(${originalIndex})">🗑️ Hapus Dusun</button>
+                    </div>
+                `;
+
+          container.appendChild(villageDiv);
+        });
+      }
+
+      // Menambahkan search input ke tampilan
+      document.addEventListener("DOMContentLoaded", function () {
+        const villageListCard = document.querySelector(".village-list");
+        const searchDiv = document.createElement("div");
+        searchDiv.innerHTML = `
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <input type="text" id="searchInput" placeholder="🔍 Cari dusun..." onkeyup="searchVillages()" style="width: 100%; padding: 12px; border: 2px solid #e0e6ed; border-radius: 10px;">
+                </div>
+            `;
+        villageListCard.insertBefore(
+          searchDiv,
+          villageListCard.querySelector("#villagesList")
+        );
+      });
+    </script>
+  </body>
+</html>
