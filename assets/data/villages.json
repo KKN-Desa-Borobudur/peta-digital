@@ -3,7 +3,7 @@
     "id": "ngaran-1",
     "nama_dusun": "Ngaran I",
     "status": "Dusun Utama",
-    "koordinat": [-7.6068, 110.2015],
+    "koordinat": [-7.608393, 110.209858],
     "data_demografis": {
       "jumlah_penduduk": 1876,
       "persentase_dari_total": "21.0%",
@@ -18,6 +18,7 @@
         "kategori": "Toko",
         "deskripsi": "Menyediakan kebutuhan sehari-hari warga dusun dengan harga bersaing.",
         "telepon": "081987654321",
+        "koordinat": [-7.608193, 110.210058],
         "link_gmaps": "https://maps.app.goo.gl/ngaran1-toko"
       }
     ]
@@ -41,6 +42,7 @@
         "kategori": "Toko",
         "deskripsi": "Menjual sayuran segar dari petani lokal dengan kualitas terbaik.",
         "telepon": "081234567890",
+        "koordinat": [-7.6033, 110.2057],
         "link_gmaps": "https://maps.app.goo.gl/ngaran2-sayur"
       },
       {
@@ -48,6 +50,7 @@
         "kategori": "Makanan",
         "deskripsi": "Masakan rumahan khas dusun dengan menu sayur segar dan lauk pauk tradisional.",
         "telepon": "082112345678",
+        "koordinat": [-7.6037, 110.2053],
         "link_gmaps": "https://maps.app.goo.gl/ngaran2-warung"
       },
       {
@@ -55,6 +58,7 @@
         "kategori": "Pertanian",
         "deskripsi": "Koperasi petani yang menjual hasil panen langsung ke konsumen.",
         "telepon": "083345678901",
+        "koordinat": [-7.6031, 110.2059],
         "link_gmaps": "https://maps.app.goo.gl/ngaran2-tani"
       },
       {
@@ -62,6 +66,7 @@
         "kategori": "Jasa",
         "deskripsi": "Servis dan perbaikan kendaraan bermotor dengan harga terjangkau.",
         "telepon": "084567890123",
+        "koordinat": [-7.6039, 110.2051],
         "link_gmaps": "https://maps.app.goo.gl/ngaran2-bengkel"
       },
       {
@@ -69,6 +74,7 @@
         "kategori": "Jasa",
         "deskripsi": "Layanan potong rambut, creambath, dan perawatan kecantikan.",
         "telepon": "085678901234",
+        "koordinat": [-7.6033, 110.2061],
         "link_gmaps": "https://maps.app.goo.gl/ngaran2-salon"
       }
     ]
@@ -92,6 +98,7 @@
         "kategori": "Makanan",
         "deskripsi": "Restoran dengan menu tradisional Jawa dan view langsung ke Candi Borobudur.",
         "telepon": "081111222333",
+        "koordinat": [-7.6077, 110.2036],
         "link_gmaps": "https://maps.app.goo.gl/borobudur-resto"
       },
       {
@@ -99,6 +106,7 @@
         "kategori": "Kerajinan",
         "deskripsi": "Toko souvenir dengan berbagai kerajinan khas Borobudur dan miniatur candi.",
         "telepon": "082222333444",
+        "koordinat": [-7.6081, 110.2032],
         "link_gmaps": "https://maps.app.goo.gl/borobudur-souvenir"
       },
       {
@@ -106,6 +114,7 @@
         "kategori": "Jasa",
         "deskripsi": "Penginapan homestay dengan suasana tradisional dan pelayanan ramah.",
         "telepon": "083333444555",
+        "koordinat": [-7.6075, 110.2038],
         "link_gmaps": "https://maps.app.goo.gl/borobudur-homestay"
       },
       {
@@ -113,6 +122,7 @@
         "kategori": "Makanan",
         "deskripsi": "Gudeg spesial dengan bumbu rahasia dan porsi yang mengenyangkan.",
         "telepon": "084444555666",
+        "koordinat": [-7.6083, 110.203],
         "link_gmaps": "https://maps.app.goo.gl/borobudur-gudeg"
       },
       {
@@ -120,6 +130,7 @@
         "kategori": "Kerajinan",
         "deskripsi": "Batik tulis dan cap dengan motif khas Borobudur, tersedia custom design.",
         "telepon": "085555666777",
+        "koordinat": [-7.6073, 110.204],
         "link_gmaps": "https://maps.app.goo.gl/borobudur-batik"
       },
       {
@@ -127,6 +138,7 @@
         "kategori": "Makanan",
         "deskripsi": "Angkringan legendaris dengan menu lengkap dan harga mahasiswa.",
         "telepon": "086666777888",
+        "koordinat": [-7.6085, 110.2028],
         "link_gmaps": "https://maps.app.goo.gl/borobudur-angkringan"
       },
       {
@@ -134,6 +146,7 @@
         "kategori": "Jasa",
         "deskripsi": "Penyewaan motor untuk wisatawan dengan tarif harian dan mingguan.",
         "telepon": "087777888999",
+        "koordinat": [-7.6071, 110.2042],
         "link_gmaps": "https://maps.app.goo.gl/borobudur-rental"
       }
     ]
