@@ -6,6 +6,8 @@ class PetaDigitalDesa {
     this.villagesData = [];
     this.currentDusun = null;
     this.filteredUMKM = [];
+    this.umkmMarkers = []; // Array untuk menyimpan marker UMKM
+    this.dusunMarker = null; // Marker untuk dusun yang dipilih
 
     // Pagination properties
     this.currentPage = 1;
@@ -128,24 +130,180 @@ class PetaDigitalDesa {
     this.map.setView(dusun.koordinat, 15);
 
     // Hapus marker lama (kecuali marker default Desa Borobudur)
-    this.map.eachLayer((layer) => {
-      if (layer instanceof L.Marker) {
-        // Hanya hapus marker yang bukan marker default
-        const markerLatLng = layer.getLatLng();
-        if (
-          markerLatLng.lat !== this.defaultCoordinates[0] ||
-          markerLatLng.lng !== this.defaultCoordinates[1]
-        ) {
-          this.map.removeLayer(layer);
-        }
-      }
-    });
+    this.clearDusunAndUMKMMarkers();
 
-    // Tambahkan marker untuk dusun (tanpa marker UMKM sesuai permintaan)
-    L.marker(dusun.koordinat)
+    // Tambahkan marker untuk dusun dengan icon khusus
+    this.dusunMarker = L.marker(dusun.koordinat, {
+      icon: L.divIcon({
+        html: `
+          <div style="
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            border: 3px solid white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+          ">
+            🏘️
+          </div>
+        `,
+        className: "custom-dusun-marker",
+        iconSize: [40, 40],
+        iconAnchor: [20, 20],
+        popupAnchor: [0, -20],
+      }),
+    })
       .addTo(this.map)
-      .bindPopup(`<b>${dusun.nama_dusun}</b><br>${dusun.status}`)
+      .bindPopup(
+        `
+        <div style="min-width: 200px; text-align: center;">
+          <h3 style="margin: 0 0 8px 0; color: #e74c3c; font-size: 18px;">
+            🏘️ ${dusun.nama_dusun}
+          </h3>
+          <p style="margin: 0 0 8px 0; font-size: 14px; color: #7f8c8d; font-weight: 600;">
+            ${dusun.status}
+          </p>
+          <p style="margin: 0; font-size: 12px; color: #2c3e50;">
+            <strong>Penduduk:</strong> ${dusun.data_demografis.jumlah_penduduk.toLocaleString(
+              "id-ID"
+            )} jiwa
+          </p>
+        </div>
+      `
+      )
       .openPopup();
+
+    // Tambahkan marker untuk semua UMKM di dusun
+    this.addUMKMMarkers(dusun.umkm);
+  }
+
+  addUMKMMarkers(umkmList) {
+    // Clear existing UMKM markers
+    this.clearUMKMMarkers();
+
+    // Tambahkan marker untuk setiap UMKM
+    umkmList.forEach((umkm, index) => {
+      // Buat icon berdasarkan kategori
+      const icon = this.getUMKMIcon(umkm.kategori);
+
+      const marker = L.marker(umkm.koordinat, { icon }).addTo(this.map)
+        .bindPopup(`
+          <div style="min-width: 200px;">
+            <h4 style="margin: 0 0 8px 0; color: #2c3e50;">${umkm.nama}</h4>
+            <p style="margin: 0 0 8px 0; font-size: 12px; color: #7f8c8d;">
+              <strong>Kategori:</strong> ${umkm.kategori}
+            </p>
+            <p style="margin: 0 0 8px 0; font-size: 12px; line-height: 1.4;">
+              ${umkm.deskripsi}
+            </p>
+            <p style="margin: 0 0 8px 0; font-size: 12px;">
+              <strong>Telepon:</strong> <a href="tel:${umkm.telepon}" style="color: #3498db; text-decoration: none;">${umkm.telepon}</a>
+            </p>
+            <a href="${umkm.link_gmaps}" target="_blank" 
+               style="display: inline-block; padding: 4px 8px; background: #3498db; color: white; text-decoration: none; border-radius: 4px; font-size: 12px;">
+              Lihat di Google Maps
+            </a>
+          </div>
+        `);
+
+      // Simpan marker ke array
+      this.umkmMarkers.push(marker);
+    });
+  }
+
+  getUMKMIcon(kategori) {
+    let iconColor, iconEmoji;
+
+    switch (kategori.toLowerCase()) {
+      case "makanan":
+        iconColor = "#27ae60";
+        iconEmoji = "🍽️";
+        break;
+      case "toko":
+        iconColor = "#f39c12";
+        iconEmoji = "🏪";
+        break;
+      case "kerajinan":
+        iconColor = "#9b59b6";
+        iconEmoji = "🎨";
+        break;
+      case "jasa":
+        iconColor = "#3498db";
+        iconEmoji = "⚙️";
+        break;
+      case "pertanian":
+        iconColor = "#2ecc71";
+        iconEmoji = "🌾";
+        break;
+      default:
+        iconColor = "#34495e";
+        iconEmoji = "📍";
+    }
+
+    return L.divIcon({
+      html: `
+        <div style="
+          width: 32px;
+          height: 32px;
+          background: linear-gradient(135deg, ${iconColor}, ${this.darkenColor(
+        iconColor
+      )});
+          border: 2px solid white;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+          font-size: 14px;
+          transform: scale(1);
+          transition: transform 0.2s ease;
+        ">
+          ${iconEmoji}
+        </div>
+      `,
+      className: "custom-umkm-marker",
+      iconSize: [32, 32],
+      iconAnchor: [16, 16],
+      popupAnchor: [0, -16],
+    });
+  }
+
+  darkenColor(color) {
+    // Fungsi untuk membuat warna lebih gelap untuk efek gradient
+    const colorMap = {
+      "#27ae60": "#1e8449",
+      "#f39c12": "#d68910",
+      "#9b59b6": "#8e44ad",
+      "#3498db": "#2980b9",
+      "#2ecc71": "#27ae60",
+      "#34495e": "#2c3e50",
+    };
+    return colorMap[color] || "#2c3e50";
+  }
+
+  clearDusunAndUMKMMarkers() {
+    // Hapus marker dusun
+    if (this.dusunMarker) {
+      this.map.removeLayer(this.dusunMarker);
+      this.dusunMarker = null;
+    }
+
+    // Hapus marker UMKM
+    this.clearUMKMMarkers();
+  }
+
+  clearUMKMMarkers() {
+    this.umkmMarkers.forEach((marker) => {
+      this.map.removeLayer(marker);
+    });
+    this.umkmMarkers = [];
   }
 
   showDusunInfo(dusun) {
@@ -253,6 +411,9 @@ class PetaDigitalDesa {
       );
     }
 
+    // Update marker UMKM di peta berdasarkan filter
+    this.updateUMKMMarkersBasedOnFilter();
+
     // Reset pagination
     this.currentPage = 1;
     this.calculatePagination();
@@ -260,6 +421,14 @@ class PetaDigitalDesa {
     // Re-render tabel dan pagination
     this.renderUMKMTable();
     this.renderPagination();
+  }
+
+  updateUMKMMarkersBasedOnFilter() {
+    // Hapus semua marker UMKM
+    this.clearUMKMMarkers();
+
+    // Tambahkan marker hanya untuk UMKM yang difilter
+    this.addUMKMMarkers(this.filteredUMKM);
   }
 
   calculatePagination() {
@@ -302,25 +471,53 @@ class PetaDigitalDesa {
       const row = document.createElement("tr");
       const globalIndex = startIndex + index + 1;
 
+      // Add click event to row untuk highlight marker
+      row.style.cursor = "pointer";
+      row.addEventListener("click", () => {
+        this.highlightUMKMMarker(umkm);
+      });
+
       row.innerHTML = `
                 <td>${globalIndex}</td>
                 <td><strong>${umkm.nama}</strong></td>
                 <td><span class="kategori-badge">${umkm.kategori}</span></td>
                 <td>${umkm.deskripsi}</td>
                 <td>
-                    <a href="tel:${umkm.telepon}" class="telepon-link">
+                    <a href="tel:${umkm.telepon}" class="telepon-link" onclick="event.stopPropagation()">
                         ${umkm.telepon}
                     </a>
                 </td>
                 <td>
-                    <a href="${umkm.link_gmaps}" target="_blank" class="link-button">
-                        Lihat Lokasi
+                    <a href="${umkm.link_gmaps}" target="_blank" class="link-button" onclick="event.stopPropagation()">
+                        Lokasi
                     </a>
                 </td>
             `;
 
       tbody.appendChild(row);
     });
+  }
+
+  highlightUMKMMarker(umkm) {
+    // Cari marker yang sesuai dengan UMKM
+    const targetMarker = this.umkmMarkers.find((marker) => {
+      const markerLatLng = marker.getLatLng();
+      return (
+        markerLatLng.lat === umkm.koordinat[0] &&
+        markerLatLng.lng === umkm.koordinat[1]
+      );
+    });
+
+    if (targetMarker) {
+      // Pindahkan view ke marker dan buka popup
+      this.map.setView(targetMarker.getLatLng(), 17);
+      targetMarker.openPopup();
+
+      // Highlight marker sementara
+      setTimeout(() => {
+        targetMarker.bounce();
+      }, 500);
+    }
   }
 
   renderPagination() {
@@ -404,18 +601,8 @@ class PetaDigitalDesa {
     // Reset peta ke view default
     this.map.setView(this.defaultCoordinates, 13);
 
-    // Hapus marker dusun
-    this.map.eachLayer((layer) => {
-      if (layer instanceof L.Marker) {
-        const markerLatLng = layer.getLatLng();
-        if (
-          markerLatLng.lat !== this.defaultCoordinates[0] ||
-          markerLatLng.lng !== this.defaultCoordinates[1]
-        ) {
-          this.map.removeLayer(layer);
-        }
-      }
-    });
+    // Hapus marker dusun dan UMKM
+    this.clearDusunAndUMKMMarkers();
 
     // Sembunyikan section informasi
     document.getElementById("dusun-info").classList.add("hidden");
