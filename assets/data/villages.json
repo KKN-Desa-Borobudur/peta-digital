@@ -5,11 +5,12 @@
     "status": "Dusun Utama",
     "koordinat": [-7.608393, 110.209858],
     "data_demografis": {
-      "jumlah_penduduk": 1876,
-      "persentase_dari_total": "21.0%",
-      "rt_rw": "RT 01-15, RW 01-03",
-      "jumlah_rt": 15,
-      "jumlah_rw": 3
+      "jumlah_penduduk": 1245,
+      "jumlah_kk": 332,
+      "jumlah_rt": 3,
+      "tempat_ibadah": "1 Masjid, 2 Mushola",
+      "pekerjaan_utama": "Bertani dan peternakan",
+      "luas_wilayah": 0.98
     },
     "potensi": "Pusat kerajinan tradisional dan produksi keripik tempe yang terkenal di seluruh kabupaten.",
     "umkm": [
@@ -29,11 +30,12 @@
     "status": "Dusun Pendukung",
     "koordinat": [-7.6035, 110.2055],
     "data_demografis": {
-      "jumlah_penduduk": 2184,
-      "persentase_dari_total": "24.4%",
-      "rt_rw": "RT 16-30, RW 04-06",
-      "jumlah_rt": 15,
-      "jumlah_rw": 3
+      "jumlah_penduduk": 1245,
+      "jumlah_kk": 332,
+      "jumlah_rt": 3,
+      "tempat_ibadah": "1 Masjid, 2 Mushola",
+      "pekerjaan_utama": "Bertani dan peternakan",
+      "luas_wilayah": 0.98
     },
     "potensi": "Pusat pertanian dan penghasil sayuran segar dengan sistem irigasi yang baik.",
     "umkm": [
@@ -85,11 +87,12 @@
     "status": "Dusun Wisata",
     "koordinat": [-7.6079, 110.2034],
     "data_demografis": {
-      "jumlah_penduduk": 1654,
-      "persentase_dari_total": "18.5%",
-      "rt_rw": "RT 31-42, RW 07-09",
-      "jumlah_rt": 12,
-      "jumlah_rw": 3
+      "jumlah_penduduk": 1245,
+      "jumlah_kk": 332,
+      "jumlah_rt": 3,
+      "tempat_ibadah": "1 Masjid, 2 Mushola",
+      "pekerjaan_utama": "Bertani dan peternakan",
+      "luas_wilayah": 0.98
     },
     "potensi": "Dusun strategis dekat Candi Borobudur dengan potensi wisata dan kuliner yang tinggi.",
     "umkm": [
