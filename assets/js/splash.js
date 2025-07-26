@@ -37,7 +37,7 @@ class SplashScreen {
           ${this.createParticles()}
         </div>
         <div class="splash-content">
-          <img src="assets/Images/Logo.png" alt="Logo KKN" class="splash-logo" onerror="this.style.display='none'">
+          <img src="assets/Images/Logo2.png" alt="Logo KKN" class="splash-logo" onerror="this.style.display='none'">
           <h1 class="splash-title">Peta Digital</h1>
           <p class="splash-subtitle">Desa Borobudur</p>
           <p class="splash-tagline">Jelajahi potensi dusun dan UMKM lokal</p>
@@ -269,7 +269,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // Preload critical resources
 function preloadCriticalResources() {
   const resources = [
-    "assets/Images/Logo.png",
+    "assets/Images/Logo2.png",
     "assets/css/style.css",
     "assets/js/app.js",
   ];

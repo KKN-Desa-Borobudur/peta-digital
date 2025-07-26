@@ -1,4 +1,4 @@
-// Peta Digital Desa Borobudur - JavaScript Application
+// Peta Digital Desa Borobudur - JavaScript Application with Google Sheets Integration
 
 class PetaDigitalDesa {
   constructor() {
@@ -17,24 +17,42 @@ class PetaDigitalDesa {
     // Koordinat default Desa Borobudur
     this.defaultCoordinates = [-7.6088, 110.2037];
 
+    // Google Sheets configuration
+    this.spreadsheetId = "167EZvyMk3HIisF3NWdsRvoOCm0MP7WLuGvtTekGW47o";
+    this.sheetsConfig = {
+      dusun: "Dusun!A:J", // Kolom A sampai H untuk data dusun
+      umkm: "UMKM!A:H", // Kolom A sampai H untuk data UMKM
+    };
+
     this.init();
   }
 
   async init() {
     try {
+      console.log("Initializing Peta Digital Desa...");
+
+      // Show loading indicator
+      this.showLoading("Memuat aplikasi...");
+
       // Inisialisasi peta
       this.initMap();
 
-      // Load data dusun
-      await this.loadVillagesData();
+      // Load data dari Google Sheets
+      await this.loadDataFromGoogleSheets();
 
       // Setup event listeners
       this.setupEventListeners();
 
       // Populate dropdown
       this.populateDropdown();
+
+      // Hide loading indicator
+      this.hideLoading();
+
+      console.log("App initialized successfully");
     } catch (error) {
       console.error("Error initializing app:", error);
+      this.hideLoading();
       this.showError("Gagal memuat aplikasi. Silakan refresh halaman.");
     }
   }
@@ -57,35 +75,210 @@ class PetaDigitalDesa {
       .openPopup();
   }
 
-  async loadVillagesData() {
+  async loadDataFromGoogleSheets() {
     try {
-      const response = await fetch("assets/data/villages.json");
+      console.log("Loading data from Google Sheets...");
+
+      // Load data dusun dan UMKM secara paralel
+      const [dusunData, umkmData] = await Promise.all([
+        this.fetchSheetData(this.sheetsConfig.dusun),
+        this.fetchSheetData(this.sheetsConfig.umkm),
+      ]);
+
+      // Process dan gabungkan data
+      this.villagesData = this.processVillagesData(dusunData, umkmData);
+
+      console.log("Data loaded successfully:", this.villagesData);
+    } catch (error) {
+      console.error("Error loading data from Google Sheets:", error);
+      throw new Error("Gagal memuat data dari Google Sheets");
+    }
+  }
+
+  async fetchSheetData(range) {
+    const url = `https://docs.google.com/spreadsheets/d/${this.spreadsheetId}/gviz/tq?tqx=out:csv&range=${range}`;
+
+    try {
+      const response = await fetch(url);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      this.villagesData = await response.json();
+
+      const csvText = await response.text();
+      return this.parseCSV(csvText);
     } catch (error) {
-      console.error("Error loading villages data:", error);
-      throw new Error("Gagal memuat data dusun");
+      console.error("Error fetching sheet data:", error);
+      throw error;
     }
+  }
+
+  parseCSV(csvText) {
+    const lines = csvText.split("\n");
+    const headers = lines[0]
+      .split(",")
+      .map((header) => header.replace(/"/g, "").trim().toLowerCase());
+
+    const data = [];
+    for (let i = 1; i < lines.length; i++) {
+      if (lines[i].trim() === "") continue;
+
+      const values = this.parseCSVLine(lines[i]);
+      if (values.length === headers.length) {
+        const row = {};
+        headers.forEach((header, index) => {
+          row[header] = values[index].replace(/"/g, "").trim();
+        });
+        data.push(row);
+      }
+    }
+
+    return data;
+  }
+
+  parseCSVLine(line) {
+    const result = [];
+    let current = "";
+    let inQuotes = false;
+
+    for (let i = 0; i < line.length; i++) {
+      const char = line[i];
+      const nextChar = line[i + 1];
+
+      if (char === '"') {
+        if (inQuotes && nextChar === '"') {
+          current += '"';
+          i++; // Skip next quote
+        } else {
+          inQuotes = !inQuotes;
+        }
+      } else if (char === "," && !inQuotes) {
+        result.push(current);
+        current = "";
+      } else {
+        current += char;
+      }
+    }
+
+    result.push(current);
+    return result;
+  }
+
+  processVillagesData(dusunData, umkmData) {
+    const villages = [];
+
+    // Group UMKM by dusun
+    const umkmByDusun = {};
+    umkmData.forEach((umkm) => {
+      const dusunName = umkm["nama dusun"] || umkm["dusun"];
+      if (!dusunName) return;
+
+      if (!umkmByDusun[dusunName]) {
+        umkmByDusun[dusunName] = [];
+      }
+
+      // Parse koordinat UMKM
+      let koordinat = [-7.6088, 110.2037]; // Default coordinates
+      if (umkm.koordinat || umkm.latitude) {
+        try {
+          if (umkm.koordinat && umkm.koordinat.includes(",")) {
+            const coords = umkm.koordinat.split(",");
+            koordinat = [
+              parseFloat(coords[0].trim()),
+              parseFloat(coords[1].trim()),
+            ];
+          } else if (umkm.latitude && umkm.longitude) {
+            koordinat = [parseFloat(umkm.latitude), parseFloat(umkm.longitude)];
+          }
+        } catch (e) {
+          console.warn("Error parsing UMKM coordinates:", e);
+        }
+      }
+
+      umkmByDusun[dusunName].push({
+        nama: umkm.nama || umkm["nama umkm"] || "Tidak ada nama",
+        kategori: umkm.kategori || "Lainnya",
+        deskripsi: umkm.deskripsi || "Tidak ada deskripsi",
+        telepon: umkm.telepon || umkm.phone || "-",
+        koordinat: koordinat,
+        link_gmaps:
+          umkm["link gmaps"] ||
+          umkm.gmaps ||
+          `https://maps.google.com?q=${koordinat[0]},${koordinat[1]}`,
+      });
+    });
+
+    // Process dusun data
+    dusunData.forEach((dusun, index) => {
+      // Parse koordinat dusun
+      let koordinat = [-7.6088, 110.2037]; // Default coordinates
+      if (dusun.koordinat || dusun.latitude) {
+        try {
+          if (dusun.koordinat && dusun.koordinat.includes(",")) {
+            const coords = dusun.koordinat.split(",");
+            koordinat = [
+              parseFloat(coords[0].trim()),
+              parseFloat(coords[1].trim()),
+            ];
+          } else if (dusun.latitude && dusun.longitude) {
+            koordinat = [
+              parseFloat(dusun.latitude),
+              parseFloat(dusun.longitude),
+            ];
+          }
+        } catch (e) {
+          console.warn("Error parsing dusun coordinates:", e);
+        }
+      }
+
+      const dusunName =
+        dusun.nama || dusun["nama dusun"] || `Dusun ${index + 1}`;
+
+      villages.push({
+        id: `dusun-${index + 1}`,
+        nama_dusun: dusunName,
+        status: dusun.status || "Aktif",
+        koordinat: koordinat,
+        data_demografis: {
+          jumlah_penduduk:
+            parseInt(dusun["jumlah penduduk"] || dusun.penduduk || "0") || 0,
+          jumlah_kk: parseInt(dusun["jumlah kk"] || dusun.kk || "0") || 0,
+          jumlah_rt: parseInt(dusun["jumlah rt"] || dusun.rt || "0") || 0,
+          tempat_ibadah: dusun["tempat ibadah"] || dusun.ibadah || "-",
+          pekerjaan_utama: dusun["pekerjaan utama"] || dusun.pekerjaan || "-",
+          luas_wilayah:
+            parseFloat(dusun["luas wilayah"] || dusun.luas || "25") || 0,
+        },
+        potensi:
+          dusun.potensi ||
+          "Dusun ini memiliki beragam potensi yang mencerminkan kekayaan alam, budaya, maupun kegiatan ekonomi masyarakat setempat. Informasi potensi belum tersedia secara spesifik.",
+        umkm: umkmByDusun[dusunName] || [],
+      });
+    });
+
+    return villages;
   }
 
   setupEventListeners() {
     // Event listener untuk dropdown dusun
     const dusunSelect = document.getElementById("dusun-select");
-    dusunSelect.addEventListener("change", (e) => {
-      this.onDusunChange(e.target.value);
-    });
+    if (dusunSelect) {
+      dusunSelect.addEventListener("change", (e) => {
+        this.onDusunChange(e.target.value);
+      });
+    }
 
     // Event listener untuk filter kategori
     const kategoriFilter = document.getElementById("kategori-filter");
-    kategoriFilter.addEventListener("change", (e) => {
-      this.onKategoriFilterChange(e.target.value);
-    });
+    if (kategoriFilter) {
+      kategoriFilter.addEventListener("change", (e) => {
+        this.onKategoriFilterChange(e.target.value);
+      });
+    }
   }
 
   populateDropdown() {
     const dusunSelect = document.getElementById("dusun-select");
+    if (!dusunSelect) return;
 
     // Clear existing options (keep the first default option)
     dusunSelect.innerHTML = '<option value="">-- Pilih Dusun --</option>';
@@ -313,43 +506,60 @@ class PetaDigitalDesa {
     const demografisElement = document.getElementById("demografis-content");
     const potensiElement = document.getElementById("potensi-content");
 
+    if (
+      !infoSection ||
+      !namaElement ||
+      !statusElement ||
+      !demografisElement ||
+      !potensiElement
+    ) {
+      console.warn("Some info elements not found");
+      return;
+    }
+
     // Set nama dan status
     namaElement.textContent = dusun.nama_dusun;
     statusElement.textContent = dusun.status;
 
     // Set data demografis
     demografisElement.innerHTML = `
-            <div class="demografis-item">
-                <span class="demografis-label">Jumlah Penduduk:</span>
-                <span class="demografis-value">${dusun.data_demografis.jumlah_penduduk.toLocaleString(
-                  "id-ID"
-                )} jiwa</span>
-            </div>
-            <div class="demografis-item">
-                <span class="demografis-label">Persentase dari Total:</span>
-                <span class="demografis-value">${
-                  dusun.data_demografis.persentase_dari_total
-                }</span>
-            </div>
-            <div class="demografis-item">
-                <span class="demografis-label">RT/RW:</span>
-                <span class="demografis-value">${
-                  dusun.data_demografis.rt_rw
-                }</span>
-            </div>
-            <div class="demografis-item">
-                <span class="demografis-label">Jumlah RT:</span>
-                <span class="demografis-value">${
-                  dusun.data_demografis.jumlah_rt
-                } RT</span>
-            </div>
-            <div class="demografis-item">
-                <span class="demografis-label">Jumlah RW:</span>
-                <span class="demografis-value">${
-                  dusun.data_demografis.jumlah_rw
-                } RW</span>
-            </div>
-        `;
+    <div class="demografis-item">
+        <span class="demografis-label">Jumlah Penduduk:</span>
+        <span class="demografis-value">${dusun.data_demografis.jumlah_penduduk.toLocaleString(
+          "id-ID"
+        )} jiwa</span>
+    </div>
+    <div class="demografis-item">
+        <span class="demografis-label">Jumlah KK:</span>
+        <span class="demografis-value">${dusun.data_demografis.jumlah_kk.toLocaleString(
+          "id-ID"
+        )} KK</span>
+    </div>
+    <div class="demografis-item">
+        <span class="demografis-label">Jumlah RT:</span>
+        <span class="demografis-value">${
+          dusun.data_demografis.jumlah_rt
+        } RT</span>
+    </div>
+    <div class="demografis-item">
+        <span class="demografis-label">Tempat Ibadah:</span>
+        <span class="demografis-value">${
+          dusun.data_demografis.tempat_ibadah
+        }</span>
+    </div>
+    <div class="demografis-item">
+        <span class="demografis-label">Pekerjaan Utama:</span>
+        <span class="demografis-value">${
+          dusun.data_demografis.pekerjaan_utama
+        }</span>
+    </div>
+    <div class="demografis-item">
+        <span class="demografis-label">Luas Wilayah:</span>
+        <span class="demografis-value">${
+          dusun.data_demografis.luas_wilayah
+        } km²</span>
+    </div>
+`;
 
     // Set potensi
     potensiElement.textContent = dusun.potensi;
@@ -360,6 +570,10 @@ class PetaDigitalDesa {
 
   showUMKMSection(dusun) {
     const umkmSection = document.getElementById("umkm-section");
+    if (!umkmSection) {
+      console.warn("UMKM section not found");
+      return;
+    }
 
     // Populate kategori filter
     this.populateKategoriFilter(dusun.umkm);
@@ -383,6 +597,7 @@ class PetaDigitalDesa {
 
   populateKategoriFilter(umkmList) {
     const kategoriFilter = document.getElementById("kategori-filter");
+    if (!kategoriFilter) return;
 
     // Clear existing options
     kategoriFilter.innerHTML = '<option value="">Semua Kategori</option>';
@@ -446,6 +661,7 @@ class PetaDigitalDesa {
 
   renderUMKMTable() {
     const tbody = document.getElementById("umkm-tbody");
+    if (!tbody) return;
 
     // Clear existing rows
     tbody.innerHTML = "";
@@ -515,7 +731,14 @@ class PetaDigitalDesa {
 
       // Highlight marker sementara
       setTimeout(() => {
-        targetMarker.bounce();
+        // Simple highlight effect with CSS animation
+        const markerElement = targetMarker.getElement();
+        if (markerElement) {
+          markerElement.style.animation = "bounce 0.6s ease-in-out";
+          setTimeout(() => {
+            markerElement.style.animation = "";
+          }, 600);
+        }
       }, 500);
     }
   }
@@ -530,10 +753,12 @@ class PetaDigitalDesa {
 
       // Insert after table container
       const tableContainer = document.querySelector(".table-container");
-      tableContainer.parentNode.insertBefore(
-        paginationContainer,
-        tableContainer.nextSibling
-      );
+      if (tableContainer) {
+        tableContainer.parentNode.insertBefore(
+          paginationContainer,
+          tableContainer.nextSibling
+        );
+      }
     }
 
     // Hide pagination if only one page or no data
@@ -580,75 +805,379 @@ class PetaDigitalDesa {
     const prevBtn = document.getElementById("prev-btn");
     const nextBtn = document.getElementById("next-btn");
 
-    prevBtn.addEventListener("click", () => {
-      if (this.currentPage > 1) {
-        this.currentPage--;
-        this.renderUMKMTable();
-        this.renderPagination();
-      }
-    });
+    if (prevBtn) {
+      prevBtn.addEventListener("click", () => {
+        if (this.currentPage > 1) {
+          this.currentPage--;
+          this.renderUMKMTable();
+          this.renderPagination();
+        }
+      });
+    }
 
-    nextBtn.addEventListener("click", () => {
-      if (this.currentPage < this.totalPages) {
-        this.currentPage++;
-        this.renderUMKMTable();
-        this.renderPagination();
-      }
-    });
+    if (nextBtn) {
+      nextBtn.addEventListener("click", () => {
+        if (this.currentPage < this.totalPages) {
+          this.currentPage++;
+          this.renderUMKMTable();
+          this.renderPagination();
+        }
+      });
+    }
   }
 
   resetView() {
-    // Reset peta ke view default
+    // Reset ke view default
     this.map.setView(this.defaultCoordinates, 13);
 
-    // Hapus marker dusun dan UMKM
+    // Clear markers
     this.clearDusunAndUMKMMarkers();
 
-    // Sembunyikan section informasi
-    document.getElementById("dusun-info").classList.add("hidden");
-    document.getElementById("umkm-section").classList.add("hidden");
+    // Hide info sections
+    const dusunInfo = document.getElementById("dusun-info");
+    const umkmSection = document.getElementById("umkm-section");
 
-    // Hide pagination
-    const paginationContainer = document.getElementById("pagination-container");
-    if (paginationContainer) {
-      paginationContainer.classList.add("hidden");
+    if (dusunInfo) dusunInfo.classList.add("hidden");
+    if (umkmSection) umkmSection.classList.add("hidden");
+
+    // Reset current dusun
+    this.currentDusun = null;
+    this.filteredUMKM = [];
+
+    // Reset pagination
+    this.currentPage = 1;
+    this.totalPages = 0;
+  }
+
+  showLoading(message = "Memuat...") {
+    // Create loading overlay if it doesn't exist
+    let loadingOverlay = document.getElementById("loading-overlay");
+    if (!loadingOverlay) {
+      loadingOverlay = document.createElement("div");
+      loadingOverlay.id = "loading-overlay";
+      loadingOverlay.innerHTML = `
+        <div class="loading-content">
+          <div class="loading-spinner"></div>
+          <p class="loading-message">${message}</p>
+        </div>
+      `;
+      document.body.appendChild(loadingOverlay);
     }
 
-    // Reset current dusun dan pagination
-    this.currentDusun = null;
-    this.currentPage = 1;
-    this.filteredUMKM = [];
+    // Update message and show
+    const loadingMessage = loadingOverlay.querySelector(".loading-message");
+    if (loadingMessage) {
+      loadingMessage.textContent = message;
+    }
+
+    loadingOverlay.classList.remove("hidden");
+    loadingOverlay.style.display = "flex";
+  }
+
+  hideLoading() {
+    const loadingOverlay = document.getElementById("loading-overlay");
+    if (loadingOverlay) {
+      loadingOverlay.classList.add("hidden");
+      loadingOverlay.style.display = "none";
+    }
   }
 
   showError(message) {
-    const errorDiv = document.createElement("div");
-    errorDiv.className = "error-message";
-    errorDiv.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #e74c3c;
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
-            z-index: 1000;
-            font-weight: 600;
-        `;
-    errorDiv.textContent = message;
+    // Create error toast if it doesn't exist
+    let errorToast = document.getElementById("error-toast");
+    if (!errorToast) {
+      errorToast = document.createElement("div");
+      errorToast.id = "error-toast";
+      errorToast.className = "error-toast";
+      document.body.appendChild(errorToast);
+    }
 
-    document.body.appendChild(errorDiv);
+    // Set message and show
+    errorToast.innerHTML = `
+      <div class="error-content">
+        <span class="error-icon">⚠️</span>
+        <span class="error-message">${message}</span>
+        <button class="error-close" onclick="this.parentElement.parentElement.classList.add('hidden')">✕</button>
+      </div>
+    `;
 
-    // Auto remove after 5 seconds
+    errorToast.classList.remove("hidden");
+
+    // Auto hide after 5 seconds
     setTimeout(() => {
-      if (errorDiv.parentNode) {
-        errorDiv.parentNode.removeChild(errorDiv);
+      if (errorToast) {
+        errorToast.classList.add("hidden");
       }
     }, 5000);
   }
+
+  // Method untuk export data (opsional)
+  exportUMKMData() {
+    if (!this.currentDusun || this.filteredUMKM.length === 0) {
+      this.showError("Tidak ada data UMKM untuk diekspor");
+      return;
+    }
+
+    // Prepare data for export
+    const exportData = this.filteredUMKM.map((umkm, index) => ({
+      No: index + 1,
+      Nama: umkm.nama,
+      Kategori: umkm.kategori,
+      Deskripsi: umkm.deskripsi,
+      Telepon: umkm.telepon,
+      Koordinat: `${umkm.koordinat[0]}, ${umkm.koordinat[1]}`,
+      "Link Google Maps": umkm.link_gmaps,
+    }));
+
+    // Convert to CSV
+    const csvContent = this.convertToCSV(exportData);
+
+    // Download file
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute(
+      "download",
+      `UMKM_${this.currentDusun.nama_dusun}_${
+        new Date().toISOString().split("T")[0]
+      }.csv`
+    );
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  convertToCSV(data) {
+    if (data.length === 0) return "";
+
+    const headers = Object.keys(data[0]);
+    const csvRows = [];
+
+    // Add headers
+    csvRows.push(headers.join(","));
+
+    // Add data rows
+    data.forEach((row) => {
+      const values = headers.map((header) => {
+        const value = row[header] || "";
+        // Escape commas and quotes in values
+        return `"${value.toString().replace(/"/g, '""')}"`;
+      });
+      csvRows.push(values.join(","));
+    });
+
+    return csvRows.join("\n");
+  }
+
+  // Method untuk print informasi dusun (opsional)
+  printDusunInfo() {
+    if (!this.currentDusun) {
+      this.showError("Pilih dusun terlebih dahulu");
+      return;
+    }
+
+    const printWindow = window.open("", "_blank");
+    const printContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Informasi ${this.currentDusun.nama_dusun}</title>
+        <style>
+          body { font-family: Arial, sans-serif; margin: 20px; }
+          .header { text-align: center; margin-bottom: 30px; }
+          .section { margin-bottom: 20px; }
+          .section h3 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 5px; }
+          .demografis-item { display: flex; justify-content: space-between; padding: 5px 0; }
+          .umkm-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+          .umkm-table th, .umkm-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+          .umkm-table th { background-color: #f2f2f2; }
+          @media print {
+            body { margin: 0; }
+            .no-print { display: none; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>Informasi Dusun ${this.currentDusun.nama_dusun}</h1>
+          <p>Desa Borobudur, Kabupaten Magelang, Jawa Tengah</p>
+          <p>Dicetak pada: ${new Date().toLocaleDateString("id-ID")}</p>
+        </div>
+        
+        <div class="section">
+          <h3>Data Demografis</h3>
+          <div class="demografis-item">
+            <strong>Status:</strong> <span>${this.currentDusun.status}</span>
+          </div>
+          <div class="demografis-item">
+            <strong>Jumlah Penduduk:</strong> <span>${this.currentDusun.data_demografis.jumlah_penduduk.toLocaleString(
+              "id-ID"
+            )} jiwa</span>
+          </div>
+          <div class="demografis-item">
+            <strong>Jumlah KK:</strong> <span>${this.currentDusun.data_demografis.jumlah_kk.toLocaleString(
+              "id-ID"
+            )} KK</span>
+          </div>
+          <div class="demografis-item">
+            <strong>Jumlah RT:</strong> <span>${
+              this.currentDusun.data_demografis.jumlah_rt
+            } RT</span>
+          </div>
+          <div class="demografis-item">
+            <strong>Tempat Ibadah:</strong> <span>${
+              this.currentDusun.data_demografis.tempat_ibadah
+            }</span>
+          </div>
+          <div class="demografis-item">
+            <strong>Pekerjaan Utama:</strong> <span>${
+              this.currentDusun.data_demografis.pekerjaan_utama
+            }</span>
+          </div>
+          <div class="demografis-item">
+            <strong>Luas Wilayah:</strong> <span>${
+              this.currentDusun.data_demografis.luas_wilayah
+            } km²</span>
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>Potensi Dusun</h3>
+          <p>${this.currentDusun.potensi}</p>
+        </div>
+
+        <div class="section">
+          <h3>Daftar UMKM (${this.currentDusun.umkm.length} UMKM)</h3>
+          <table class="umkm-table">
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>Nama UMKM</th>
+                <th>Kategori</th>
+                <th>Deskripsi</th>
+                <th>Telepon</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${this.currentDusun.umkm
+                .map(
+                  (umkm, index) => `
+                <tr>
+                  <td>${index + 1}</td>
+                  <td>${umkm.nama}</td>
+                  <td>${umkm.kategori}</td>
+                  <td>${umkm.deskripsi}</td>
+                  <td>${umkm.telepon}</td>
+                </tr>
+              `
+                )
+                .join("")}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="no-print" style="margin-top: 30px; text-align: center;">
+          <button onclick="window.print()" style="padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            Cetak Halaman
+          </button>
+          <button onclick="window.close()" style="padding: 10px 20px; background: #95a5a6; color: white; border: none; border-radius: 5px; cursor: pointer; margin-left: 10px;">
+            Tutup
+          </button>
+        </div>
+      </body>
+      </html>
+    `;
+
+    printWindow.document.write(printContent);
+    printWindow.document.close();
+  }
+
+  // Method untuk mendapatkan statistik UMKM
+  getUMKMStatistics() {
+    if (!this.currentDusun) return null;
+
+    const umkmList = this.currentDusun.umkm;
+    const statistics = {
+      total: umkmList.length,
+      byCategory: {},
+    };
+
+    // Hitung berdasarkan kategori
+    umkmList.forEach((umkm) => {
+      const kategori = umkm.kategori;
+      if (!statistics.byCategory[kategori]) {
+        statistics.byCategory[kategori] = 0;
+      }
+      statistics.byCategory[kategori]++;
+    });
+
+    return statistics;
+  }
+
+  // Method untuk search UMKM berdasarkan nama
+  searchUMKM(query) {
+    if (!this.currentDusun) return;
+
+    const searchQuery = query.toLowerCase().trim();
+
+    if (searchQuery === "") {
+      // Reset ke semua UMKM
+      this.filteredUMKM = this.currentDusun.umkm;
+    } else {
+      // Filter berdasarkan nama atau deskripsi
+      this.filteredUMKM = this.currentDusun.umkm.filter(
+        (umkm) =>
+          umkm.nama.toLowerCase().includes(searchQuery) ||
+          umkm.deskripsi.toLowerCase().includes(searchQuery)
+      );
+    }
+
+    // Update markers dan tabel
+    this.updateUMKMMarkersBasedOnFilter();
+    this.currentPage = 1;
+    this.calculatePagination();
+    this.renderUMKMTable();
+    this.renderPagination();
+  }
 }
 
-// Initialize aplikasi saat DOM loaded
+// Initialize aplikasi ketika DOM sudah siap
 document.addEventListener("DOMContentLoaded", () => {
-  new PetaDigitalDesa();
+  try {
+    // Check if required elements exist
+    const requiredElements = ["map", "dusun-select"];
+    const missingElements = requiredElements.filter(
+      (id) => !document.getElementById(id)
+    );
+
+    if (missingElements.length > 0) {
+      console.error("Missing required elements:", missingElements);
+      return;
+    }
+
+    // Initialize aplikasi
+    window.petaDigitalDesa = new PetaDigitalDesa();
+    console.log("Peta Digital Desa initialized successfully");
+  } catch (error) {
+    console.error("Failed to initialize Peta Digital Desa:", error);
+  }
 });
+
+// CSS Animation untuk marker bounce effect (bisa ditambahkan ke CSS file)
+const bounceKeyframes = `
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+  }
+`;
+
+// Inject CSS animation jika belum ada
+if (!document.querySelector("#bounce-animation-style")) {
+  const style = document.createElement("style");
+  style.id = "bounce-animation-style";
+  style.textContent = bounceKeyframes;
+  document.head.appendChild(style);
+}
