@@ -423,6 +423,10 @@ class PetaDigitalDesa {
         iconColor = "#f39c12";
         iconEmoji = "🏪";
         break;
+      case "kopi_shop":
+        iconColor = "#9992d7ff";
+        iconEmoji = "☕";
+        break;
       case "kerajinan":
         iconColor = "#9b59b6";
         iconEmoji = "🎨";
@@ -431,9 +435,9 @@ class PetaDigitalDesa {
         iconColor = "#3498db";
         iconEmoji = "⚙️";
         break;
-      case "pertanian":
+      case "homestay":
         iconColor = "#2ecc71";
-        iconEmoji = "🌾";
+        iconEmoji = "🏠";
         break;
       default:
         iconColor = "#34495e";
