@@ -261,7 +261,7 @@ class PetaDigitalDesa {
 
     async loadDusunPolygons() {
         try {
-            const response = await fetch("assets/data/DesaBorobudurLatLong.geojson");
+            const response = await fetch("assets/data/DesaBorobudur.geojson");
             if (!response.ok) throw new Error("Failed to load GeoJSON");
             const geojson = await response.json();
 
