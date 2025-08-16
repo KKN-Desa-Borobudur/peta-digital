@@ -36,6 +36,7 @@ class PetaDigitalDesa {
 
       // Inisialisasi peta
       this.initMap();
+      await this.loadDusunPolygons();
 
       // Load data dari Google Sheets
       await this.loadDataFromGoogleSheets();
@@ -258,6 +259,38 @@ class PetaDigitalDesa {
     return villages;
   }
 
+  async loadDusunPolygons() {
+    try {
+      const response = await fetch("assets/data/DesaBorobudurLatLong.geojson");
+      if (!response.ok) throw new Error("Failed to load GeoJSON");
+      const geojson = await response.json();
+
+      // Save reference to polygons for later use if needed
+      this.dusunPolygons = L.geoJSON(geojson, {
+        style: (feature) => ({
+          color: "#e74c3c",
+          weight: 2,
+          fillOpacity: 0.15,
+        }),
+        onEachFeature: (feature, layer) => {
+          // Optionally bind popup with dusun name
+          if (feature.properties && feature.properties.nama) {
+            layer.bindPopup(`<b>Dusun:</b> ${feature.properties.nama}`);
+          }
+          // Optionally: highlight polygon on mouseover
+          layer.on("mouseover", function () {
+            this.setStyle({ fillOpacity: 0.35 });
+          });
+          layer.on("mouseout", function () {
+            this.setStyle({ fillOpacity: 0.15 });
+          });
+        },
+      }).addTo(this.map);
+    } catch (err) {
+      console.error("Error loading dusun polygons:", err);
+    }
+  }
+
   setupEventListeners() {
     // Event listener untuk dropdown dusun
     const dusunSelect = document.getElementById("dusun-select");
@@ -375,6 +408,25 @@ class PetaDigitalDesa {
 
     // Tambahkan marker untuk semua UMKM di dusun
     this.addUMKMMarkers(dusun.umkm);
+
+    // Reset all polygons to default style, then highlight the selected one
+    if (this.dusunPolygons) {
+      this.dusunPolygons.eachLayer((layer) => {
+        // Reset style for all polygons
+        this.dusunPolygons.resetStyle(layer);
+
+        // Highlight only the selected dusun
+        if (
+          layer.feature &&
+          layer.feature.properties &&
+          layer.feature.properties.nama_dusun === dusun.nama_dusun
+        ) {
+          layer.setStyle({ fillOpacity: 0.35, color: "#7ac02bff", weight: 3 });
+          this.map.fitBounds(layer.getBounds());
+          layer.openPopup();
+        }
+      });
+    }
   }
 
   addUMKMMarkers(umkmList) {
@@ -423,6 +475,10 @@ class PetaDigitalDesa {
         iconColor = "#f39c12";
         iconEmoji = "🏪";
         break;
+      case "kopi_shop":
+        iconColor = "#9992d7ff";
+        iconEmoji = "☕";
+        break;
       case "kerajinan":
         iconColor = "#9b59b6";
         iconEmoji = "🎨";
@@ -431,9 +487,9 @@ class PetaDigitalDesa {
         iconColor = "#3498db";
         iconEmoji = "⚙️";
         break;
-      case "pertanian":
+      case "homestay":
         iconColor = "#2ecc71";
-        iconEmoji = "🌾";
+        iconEmoji = "🏠";
         break;
       default:
         iconColor = "#34495e";
